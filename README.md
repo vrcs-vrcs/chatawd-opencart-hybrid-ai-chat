@@ -1,5 +1,6 @@
 # ChatAWD - AI Chat Assistant & Abandoned Cart Recovery for OpenCart
 
+
 Boost your OpenCart store sales with **ChatAWD**, the ultimate hybrid customer engagement and conversion optimization system. This module combines advanced artificial intelligence with real-time human dispatcher takeover, automated email marketing, and interactive gamification to maximize your revenue.
 
 Fully compatible with **OpenCart 3.x** and **OpenCart 4.x**.
