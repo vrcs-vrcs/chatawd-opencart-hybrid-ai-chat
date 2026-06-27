@@ -4,3 +4,8 @@
 # 2. Minden időbélyeges biztonsági mentés mappa vagy fájl mellőzése
 # (Ez kiszűri a chataiwd.ocmod_2026_02_04 és hasonló nevű mappákat/fájlokat)
 *chataiwd.ocmod_*
+.idea/
+*.iml
+deployment.xml
+modules.xml
+vcs.xml
