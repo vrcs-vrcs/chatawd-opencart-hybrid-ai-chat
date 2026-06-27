@@ -1,0 +1,61 @@
+{# extension/chataiwd/view/template/module/chataiwd_wheel_card_pending.twig #}
+<!-- SZERENCSEKERÉK - FÜGGŐBEN LÉVŐ JUTALOMPONT KÁRTYA -->
+<div class="vrcs-wheel-card vrcs-responsive-widget" style="border: 2px dashed #9b59b6; padding: 15px; border-radius: 12px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: sans-serif; width: 260px; max-width: 100%; position: relative; overflow: hidden;">
+<div class="vrcs-wheel-success-container text-center vrcs-wheel-pending-box">
+
+    {% set degrees_per_slice = 360 / total_slices %}
+    {% set base_spins = 5 * 360 %}
+    {% set fix_rotation = base_spins - ((winning_slice - 1) * degrees_per_slice) - (degrees_per_slice / 2) %}
+
+    <div class="vrcs-wheel-wrapper" style="position: relative; width: 229px; height: 229px; margin: 20px auto;">
+        <div class="vrcs-wheel-pointer" style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 24px solid #e74c3c; z-index: 20;"></div>
+
+        {% set slice_percent = 100 / total_slices %}
+        {% set gradient_parts = [] %}
+        {% set current_offset = 0 %}
+
+        {% for prize in prizes %}
+            {% set next_offset = current_offset + slice_percent %}
+            {% set gradient_parts = gradient_parts|merge([prize.color ~ ' ' ~ current_offset ~ '% ' ~ next_offset ~ '%']) %}
+            {% set current_offset = next_offset %}
+        {% endfor %}
+
+        <div class="vrcs-fortune-wheel-canvas" style="width: 100%; height: 100%;
+                border-radius: 50%; border: 6px solid #2c3e50; background: conic-gradient({{ gradient_parts|join(', ') }});
+                transform: rotate({{ fix_rotation }}deg); box-shadow: 0 4px 12px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
+
+            {% for prize in prizes %}
+                {% set current_rotation = ((prize.id - 1) * degrees_per_slice) + (degrees_per_slice / 2) %}
+                <div class="vrcs-wheel-text-holder" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                        transform: rotate({{ current_rotation }}deg); transform-origin: 50% 50%; pointer-events: none;">
+                    <span style="position: absolute; top: 45px; left: 52%; transform: translateX(-50%) rotate(90deg); t
+                    ransform-origin: top center; color: #fff; font-weight: bold; font-size: 9px;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.9), -1px -1px 2px rgba(0,0,0,0.9);
+                    white-space: nowrap; max-width: 90px; overflow: hidden; text-overflow: ellipsis;
+                    display: block; letter-spacing: 0.5px;">
+                        {{ prize.label }}
+                    </span>
+                </div>
+            {% endfor %}
+
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px;
+            background: #fff; border-radius: 50%; border: 4px solid #2c3e50; z-index: 15;"></div>
+        </div>
+    </div>
+
+    <div class="vrcs-wheel-result-box" style="display: block; margin-top: 15px;">
+        <h4 style="color: #27ae60; font-weight: bold; margin-bottom: 5px;"><i class="fa fa-gift"></i> {{ text_wheel_congrats|default('Congratulations!') }}</h4>
+        <p class="prize-text" style="font-size: 14px; font-weight: 500; margin-bottom: 10px;">{{ prize_label }}</p>
+
+        <span class="badge badge-not-success" style="background-color: #e67e22; padding: 6px 12px; font-size: 13px; display:
+        inline-block; white-space: normal; word-break: break-word;">
+            +{{ prize_value }} {{ text_wheel_points_pending|default('point is waiting for credit!') }}
+        </span>
+    </div>
+
+    <!-- TISZTA TWIG BEÉPÍTÉS (Nem bohóckodunk replace-ekkel) -->
+
+   {{ login }}
+</div>
+</div>

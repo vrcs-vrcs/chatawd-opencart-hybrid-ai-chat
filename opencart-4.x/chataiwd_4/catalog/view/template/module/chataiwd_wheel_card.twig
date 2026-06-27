@@ -1,0 +1,24 @@
+{# extension/chataiwd/view/template/module/chataiwd_wheel_card.twig #}
+
+<div class="vrcs-wheel-card claimed text-center" style="border: 2px solid #2ecc71; padding: 15px; background: #f9fbf9; border-radius: 8px;">
+    <h5 style="color: #27ae60; margin-bottom: 5px;">
+        <i class="fa fa-check-circle"></i> {{ text_wheel_title|default('Wheel of Fortune') }}
+    </h5>
+
+    {% if date_added %}
+        <p style="font-size: 13px; margin-bottom: 5px;">
+            {{ text_wheel_claimed_at|default('You have already redeemed this card at this time.:') }} <strong>{{ date_added }}</strong>
+        </p>
+    {% else %}
+        <p style="font-size: 13px; margin-bottom: 5px;">
+            {{ text_wheel_already_claimed|default('The card has already been redeemed in another window or previously.') }}
+        </p>
+    {% endif %}
+
+    {% if claimed_value %}
+        <div style="background: #fff; border: 1px dashed #2ecc71; display: inline-block; padding: 5px 10px; font-weight: bold; font-size: 15px; color: #2c3e50;">
+            {{ text_wheel_prize_label|default('Earned value:') }} {{ prize_label }}
+        </div>
+    {% endif %}
+</div>
+

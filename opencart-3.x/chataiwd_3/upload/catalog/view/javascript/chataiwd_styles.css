@@ -1,0 +1,1812 @@
+.chataiwd-container {
+    position: fixed;
+    bottom: 10px;
+    right: 15px;
+    max-width: min(850px, 90%);
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    padding: 0;
+    max-height: 93vh;
+    flex-direction: column;
+    font-size: 15px;
+    width: 100%;
+    z-index: 1000001;
+    overflow: visible !important;
+    box-sizing: border-box;
+    line-height: 20px;
+
+}
+
+.chataiwd-container *, .chataiwd-container *:before, .chataiwd-container *:after {
+    box-sizing: border-box;
+}
+
+.chataiwd-header {
+    background: linear-gradient(to bottom, var(--main-color) 0%, #ffffff 100%);
+    color: #161515;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-weight: bold;
+    display: block;
+    align-items: center;
+    font-size: 20px;
+    padding-bottom: 10px;
+    height: auto;
+    flex-shrink: 0;
+}
+.chataiwd-header-ikons {
+    padding: 25px 13px 10px 13px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.chataiwd-header .status-icon {
+    margin-right: 8px;
+    font-size: 32px;
+}
+.chataiwd-status {
+    padding: 5px 10px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    color: #333;
+}
+.chataiwd-status i {
+    font-size: 26px;
+}
+
+/* Auth bar stílusok */
+.auth-bar, #auth-btns {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+}
+#linking-offer {
+    font-weight: 100;
+}
+#linking-offer .auth-btn {
+    display: inline-block;
+    background: transparent;
+    border: 1px outset #dddddd;
+}
+
+#linking-offer .auth-btn:active {
+    display: inline-block;
+    background: transparent;
+    border: 1px inset #dddddd;
+}
+
+.auth-btn {
+    background: transparent;
+    color: #333;
+    border: none;
+    padding: 0 3px 6px 3px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.auth-btn:hover {
+    color: #000000;
+}
+
+.auth-form {
+    display: block;
+    position: absolute;
+    width: calc(100% - 20px);
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    padding: 20px 20px;
+    z-index: 22;
+    top: 15px;
+}
+
+.auth-form input {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 90%;
+}
+
+
+.auth-form button {
+    background: var(--main-color);
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.auth-bar .button_per {
+    font-weight: 100;
+}
+.auth-bar .fa-user {
+    position: relative;
+    top: -2px;
+}
+.auth-form > .close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    font-size: 22px;
+    background: none;
+    padding: 5px;
+    z-index: 21;
+}
+
+
+.auth-status {
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+}
+
+#auth-status button {
+    background: transparent;
+    border: 1px outset #dddddd;
+}
+#auth-status button:active {
+    border: 1px inset #dddddd;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.chataiwd-body {
+    overflow-y: auto;
+    padding: 10px;
+    flex: 1;
+    overflow-x: hidden;
+}
+
+.footer-ai {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    flex-shrink: 0; /* Ne nyomódjon össze */
+    background: #fff;
+    border-top: 1px solid #eee;
+    max-height: 270px; /* Itt korlátozzuk a maximális tágulást */
+    display: flex;
+    flex-direction: column;
+}
+#chataiwd-heading {
+    /*position: relative;
+    left: -5%;*/
+}
+.chataiwd-header .close-btn {
+    cursor: pointer;
+    font-size: 22px;
+    color: #4b4b50;
+}
+.img-ai-human {
+    height: 50px;
+}
+.img-ai-human-header {
+    height: 40px;
+}
+#chataiwd-footer-status {
+    display: flex;          /* Bekapcsoljuk a rugalmas elrendezést */
+    align-items: center;    /* Függőlegesen pontosan középre igazítja a tartalmat */
+    gap: 10px;              /* Fix távolság az ikon/kép és a szöveg között */
+    min-height: 40px;       /* Opcionális: legyen egy fix magassága, hogy ne ugráljon a lábléc */
+}
+
+/* Ha emojit használsz span-ben kép helyett */
+.emoji-icon {
+    font-size: 32px;
+    line-height: 1;         /* Fontos, hogy ne legyen extra sormagassága */
+    display: inline-block;
+}
+
+.chataiwd-header .close-btn .fa {
+    font-size: 22px;
+}
+
+.chataiwd-message {
+    margin-bottom: 10px;
+}
+.chataiwd-message.user, .chataiwd-message.image {
+    text-align: right;
+}
+.chataiwd-message.image {
+    padding-right: 0;
+    max-width: 100%;
+}
+
+.chataiwd-message.user .message-content {
+    background: var(--main-color);
+    color: #fff;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+.chataiwd-message.image .message-content {
+    background: transparent;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+.chataiwd-message.bot .message-content {
+    background: #f5f5f5;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 10px;
+    max-width: 100%;
+}
+.chataiwd-body .chataiwd-message.bot:first-child .message-content {
+    background: linear-gradient(to bottom, #ffffff 0%, var(--main-color) 120px);
+}
+.chataiwd-message.bot .message-content a {
+    color: var(--main-color);
+    text-decoration: underline;
+}
+.chataiwd-message.bot .message-content a:hover {
+    text-decoration: none;
+}
+.chataiwd-footer {
+    padding: 10px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.chataiwd-container .footer-ai .chataiwd-footer button {
+    width: 36px;
+    height: 36px;
+    background: #4b4b50;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: inherit;
+    padding: 10px;
+}
+.chataiwd-container .footer-ai .chataiwd-footer .send-message-button{
+    z-index: 1001;
+}
+.chataiwd-container .footer-ai .chataiwd-footer button:hover {
+    background: #000000;
+}
+
+.chataiwd-footer > button {
+    visibility: hidden;
+}
+
+.chataiwd-footer button i {
+    font-size: 20px;
+}
+.chataiwd-open-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--main-color);
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: auto;
+    animation: nodCycle 5s ease-in-out infinite, colorPulse 2s ease-in-out infinite alternate, pulse-border 3s infinite;
+}
+@keyframes pulse-border {
+    0% {
+        /*box-shadow: 0 0 0 0 var(--main-color);*/
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--main-color), white 50%)
+    }
+    70% {
+        /* Itt a szín marad, de a 10px-es kiterjedés miatt halványabbnak tűnik */
+        box-shadow: 0 0 0 20px color-mix(in srgb, var(--main-color), transparent 100%);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+@keyframes colorPulse {
+    0% {
+        filter: brightness(100%);
+    }
+    100% {
+        filter: brightness(140%);
+    }
+}
+@keyframes nodCycle {
+    0% {
+        transform: rotate(-2deg) translateY(2px);
+    }
+    5% {
+        transform: rotate(2deg) translateY(2px);
+    }
+    10% {
+        transform: rotate(-2deg) translateY(2px);
+    }
+    12%, 100% {
+        transform: rotate(0) translateY(0);
+    }
+}
+
+
+@keyframes fadePulse {
+    0% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.chataiwd-open-btn i {
+    font-size: 16px;
+}
+.chataiwd-open-btn:hover {
+    background: var(--main-color);
+}
+
+.chataiwd-message.error .message-content {
+    background: #ffcccc;
+    color: #a94442;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+/* Typing dots animáció */
+#typing-indicator .message-content {
+    background-color: transparent;
+}
+.typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #fff;
+
+}
+.typing-dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #999;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+.message-content.wait-human {
+    background-color: transparent;
+    animation: pulse 1.5s infinite ease-in-out;
+    display: inline-block;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+}
+
+
+.chataiwd-footer #send-message:hover {
+    background: #737581;
+}
+.file-name-container {
+    padding: 10px 10px 10px 10px;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    bottom: 66%;
+    left: 62px;
+    z-index: 100;
+    background: #f9f8f8;
+    text-align: right;
+    box-shadow: 3px 2px 10px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+.file-name {
+    font-size: 12px;
+    color: #666;
+    display: inline-block;
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 20px;
+}
+
+.file-clear-btn {
+    background: transparent;
+    color: #4b4b50;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 17px;
+    padding: 0;
+    position: absolute;
+    bottom: 15px;
+    right: 4px;
+}
+
+.file-clear-btn:hover {
+    color: #000000;
+    font-size: 20px;
+}
+.drop-area {
+    position: relative;
+    transition: background-color 0.3s ease;
+    border: 2px dashed transparent;
+}
+.drop-area.drag-over {
+    background-color: #e6f0fa;
+    border: 2px dashed var(--main-color);
+}
+.rotate-up {
+    transform: rotate(-90deg);
+}
+.chataiwd-message.dispacher .message-content{
+    background: #d9eef1;
+}
+.status-icon .fa {
+    font-size: 32px;
+}
+.chataiwd-status .fa {
+    font-size: 26px;
+}
+.chataiwd-message.attachment {
+    text-align: right;
+    padding-right: 0;
+    max-width: 100%;
+}
+.chataiwd-message.attachment .message-content {
+    background: transparent;
+    color: darkblue;
+    font-style: italic;
+}
+
+.chataiwd-open-btn.close-mini {
+    animation: none;
+    padding: 5px 10px;
+    border-radius: 14px;
+}
+.chataiwd-container img.thumbnail {
+    max-width: 30%;
+    width: 160px;
+    display: inline;
+}
+
+#anonymous-history-merge {
+    background: #f0f8ff;
+    border: 1px solid var(--main-color);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    margin: 10px 0;
+    text-align: center;
+}
+#anonymous-history-merge .auth-btn {
+    margin: 0 5px;
+    display: inline-block;
+    border: 1px outset;
+    position: relative;
+    padding: 3px;
+}
+#anonymous-history-merge .auth-btn:active {
+    border: 1px inset;
+
+}
+
+
+
+/* footer a emoji miatt */
+.chataiwd-footer {
+    display: block;
+    align-items: center;
+    padding: 10px;
+    background: #fff;
+}
+
+.composer-actions-bar {
+    display: flex;
+    gap: 8px;
+    margin-right: 10px;
+    justify-content: space-between; /* Ez tolja el a két oldalt */
+    align-items: center;
+    margin-top: 8px;
+}
+.left-actions {
+    display: flex;
+    gap: 10px; /* Távolság a gemkapocs és az emoji között */
+}
+
+/* Ha nem akarsz plusz div-eket, a küldő gombra is teheted: */
+.send-message-button {
+    margin-left: auto; /* Ez is jobbra tolja, ha csak egy sorban vannak */
+}
+
+
+
+.chataiwd-container .chataiwd-footer .composer-actions-bar .action-btn {
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    color: #666;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.chataiwd-container .chataiwd-footer .composer-actions-bar .action-btn:hover {
+    background: transparent;
+    color: #000;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    color: #343a40;
+}
+
+#chataiwd-input {
+    all: unset;
+    width: 100%;
+    border-radius: 6px;
+    max-height: 120px;
+    min-height: 45px;
+    color: black;
+    box-sizing: border-box;
+    line-height: 1;
+    font-family: Arial, sans-serif;
+    flex: 1;
+    border: 1px solid #eeeeee;
+    outline: none;
+    padding: 10px;
+    font-size: 15px;
+}
+/* Picmo választó z-index javítása */
+.picmo__popupContainer {
+    z-index: 9999999 !important;
+}
+
+/* Biztosítsuk, hogy a gomb ne küldje el a formot véletlenül */
+#emoji-picker-button {
+    outline: none;
+    box-shadow: none;
+}
+
+
+/* Grid elrendezés: 2 oszlopos rács */
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 egyenlő oszlop */
+    gap: 12px;
+    padding: 15px;
+}
+
+/* Egyedi kártya stílusa */
+.faq-card {
+    background: #ffffff;
+    border: 1px solid #e8daef;
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+}
+
+.faq-card:hover {
+    border-color: #8e44ad;
+    background: #fdfaff;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.15);
+}
+
+/* Vizuális terület (Kép vagy Ikon helye) */
+.faq-visual-area {
+    margin-bottom: 8px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.faq-img {
+    width: 54px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #f0f0f0;
+}
+
+.faq-icon-wrapper {
+    font-size: 24px;
+    color: #8e44ad;
+}
+
+/* Felirat a kép alatt (mint egy címke) */
+.faq-label {
+    font-size: 11px;
+    line-height: 1.2;
+    color: #333;
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Max 2 sor, utána három pont */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+#faq-overlay, .chataiwd-body #information-contact {
+    position: absolute;
+    bottom: 200px; /* Pont a beviteli sáv felett */
+    left: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #8e44ad;
+    border-radius: 15px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    z-index: 100;
+    backdrop-filter: blur(5px); /* Modern, üvegszerű hatás */
+    max-height: 70%;
+    overflow-y: auto;
+}
+.chataiwd-body #information-contact {
+    top: 10px;
+}
+
+.faq-overlay-header, .chataiwd-body .information-contact-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #f8f0fc;
+    border-radius: 15px 15px 0 0;
+    font-size: 12px;
+    font-weight: bold;
+    color: #8e44ad;
+}
+
+.chataiwd-body #information-contact-container {
+    max-width: 98%;
+}
+
+/* Ha még nincs meg, egy egyszerű pulzálás a mikrofonnak */
+.pulse-ai {
+    animation: pulse-red 1.5s infinite;
+}
+
+.pulse-ai-faq {
+    animation: pulse-faq 1.5s infinite;
+}
+
+@keyframes pulse-faq {
+    0% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+    50% {
+        transform: scale(1);
+        box-shadow: 0 0 15px 5px rgba(231, 76, 60, 0.3);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+    }
+}
+
+.voice-visualizer {
+    display: none; /* Alapból rejtett */
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 20px;
+    padding: 5px 10px;
+    position: absolute;
+    right: 15px;
+    top: 15px; /* A textarea jobb felső sarkába kerül */
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    z-index: 10;
+}
+
+.voice-visualizer span {
+    display: block;
+    width: 3px;
+    height: 5px;
+    background: #e74c3c;
+    border-radius: 2px;
+    animation: voice-bounce 0.5s infinite alternate;
+}
+
+/* Különböző ütemezés a pálcikáknak */
+.voice-visualizer span:nth-child(2) { animation-delay: 0.1s; height: 10px; }
+.voice-visualizer span:nth-child(3) { animation-delay: 0.2s; height: 15px; }
+.voice-visualizer span:nth-child(4) { animation-delay: 0.3s; height: 8px; }
+.voice-visualizer span:nth-child(5) { animation-delay: 0.4s; height: 12px; }
+
+@keyframes voice-bounce {
+    from { transform: scaleY(1); }
+    to { transform: scaleY(1.8); }
+}
+
+.loader-overlay {
+    text-align: center;
+}
+.loader-overlay .loader-gif {
+    max-width: 30%;
+}
+.loader-overlay p {
+    position: relative;
+    top: -15px;
+}
+
+@keyframes pulse-yellow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+.pulse-ai-bell {
+    animation: pulse-yellow 1.5s infinite;
+}
+
+.power-by {
+    text-align: right;
+    margin-right: 36px;
+    position: relative;
+    top: 10px;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+
+
+
+/* Közös buborék alapok */
+.chataiwd-message {
+    margin-bottom: 15px;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    display: block; /* inline-block helyett block */
+    clear: both;    /* Ez a legfontosabb: kényszeríti az új sort */
+    max-width: 90%; /* Ne érjen faltól falig a buborék */
+    word-wrap: break-word;
+}
+
+.chataiwd-message .message-content {
+    display: block;
+}
+
+/* 1. USER - Jobb oldalon, kék/színes */
+.chataiwd-message.user {
+    float: right;
+    background: #e0e0e0;
+    background: color-mix(in srgb, var(--main-color), white 70%);
+    color: white;
+    border-bottom-right-radius: 4px; /* A sarok "farka" */
+}
+
+/* 2. BOT (AI) - Bal oldalon, szürke */
+.chataiwd-message.bot {
+    float: left;
+    background-color: #e4e6eb; /* Világosszürke */
+    color: #050505;
+    border-bottom-left-radius: 4px;
+}
+
+/* 3. DISPATCHER (Ember) - Bal oldalon, de más szín (pl. halvány zöld vagy narancs) */
+.chataiwd-message.bot.dispacher {
+    float: left;
+    background-color: #d1f2eb; /* Halvány menta - jelzi, hogy "élő" ember */
+    border: 1px solid #a3e4d7;
+    color: #0e6251;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0, 102, 102, 0.90);
+}
+
+/* Név kiírása a diszpécser fölé */
+.chataiwd-message.bot.dispacher::before {
+    content: "Customer service: " attr(data-name);
+    display: block;
+    font-size: 10px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    color: #117a65;
+    line-height: 10px;
+}
+.chataiwd-message.bot.dispacher[data-name]:not([data-name=""])::before {
+    content: attr(data-name);
+}
+
+#chat-history-loader, .loader-overlay, #faq-grid-container {
+    clear: both;
+    width: 100%;
+    display: block;
+}
+.composer-actions-bar .text-warning {
+    color: #faa732;
+}
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+#chat-consent-overlay {
+    position: absolute; /* A chat-containeren belül marad */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.85); /* Félig áttetsző fehér */
+    backdrop-filter: blur(8px); /* Modern elhomályosítás */
+    z-index: 9999; /* Minden felett legyen */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px; /* Hogy passzoljon a chat ablakhoz */
+}
+
+#chat-consent-overlay.hidden {
+    display: none !important;
+}
+
+.consent-modal {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    width: 85%;
+}
+
+.consent-modal h3 {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.consent-modal p {
+    font-size: 13px;
+    color: #555;
+    margin: 15px 0;
+}
+
+.consent-links {
+    margin-bottom: 20px;
+}
+
+.consent-links a {
+    display: block;
+    font-size: 12px;
+    color: var(--main-color);
+    text-decoration: underline;
+    margin-bottom: 5px;
+}
+
+.btn-accept {
+    background: var(--main-color);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.2s;
+}
+
+.btn-accept:hover {
+    transform: scale(1.02);
+}
+
+.legal-inner-modal {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #ffffff;
+    z-index: 10;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+}
+.legal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+.legal-body {
+    overflow-y: auto;
+    font-size: 12px;
+    text-align: left;
+    line-height: 1.4;
+    color: #333;
+    flex-grow: 1;
+}
+.close-inner { cursor: pointer; color: #888; }
+.hidden { display: none !important; }
+
+/* Felső bezáró az overlay-en */
+.close-btn-overlay {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #999;
+    transition: color 0.2s;
+}
+.close-btn-overlay:hover { color: #333; }
+
+/* Mégse link stílusa */
+.decline-link {
+    margin-top: 15px;
+}
+.decline-link a {
+    font-size: 12px;
+    color: #888 !important;
+    text-decoration: underline;
+}
+.decline-link a:hover { color: #555 !important; }
+
+/* Vissza nyíl a belső nézetben a bezáró X helyett/mellett néha barátságosabb */
+.close-inner i {
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--main-color);
+}
+
+.chataiwd-open-btn-wrapper {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+}
+
+
+.chat-welcome-bubble {
+    display: flex;            /* ÚJ: ikon és szöveg egymás mellé */
+    align-items: flex-start;  /* ÚJ: felső igazítás */
+    gap: 10px;                /* ÚJ: távolság az ikon és szöveg között */
+
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 15px;
+    background: #ffffff;
+    color: #333;
+    padding: 15px 15px;
+    border-radius: 12px 12px 0px 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    font-size: 13px;
+    font-weight: 500;
+
+    white-space: normal;
+    width: max-content;
+    max-width: 300px;
+    word-wrap: break-word;
+
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.bubble-avatar {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    flex-shrink: 0; /* Megakadályozza a kép összenyomódását */
+}
+
+/* ÚJ: A szöveg tárolója */
+.bubble-text {
+    flex: 1;
+}
+
+.chat-welcome-bubble.show {
+    opacity: 1;
+    transform: translateY(-48px) scale(1); /* Megmaradt az általad beállított érték */
+    pointer-events: auto;
+}
+
+/* A kis háromszög a buborék aljára */
+.chat-welcome-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 15px;
+    border-width: 8px 8px 0 0;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+}
+
+
+
+
+#information-contact-container {
+    padding: 20px;
+}
+
+.chataiwd-form-group {
+    margin-bottom: 15px;
+}
+
+.chataiwd-form-group input,
+.chataiwd-form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    box-sizing: border-box; /* A WP padding-fix miatt fontos! */
+}
+
+.chataiwd-form-group input:focus,
+.chataiwd-form-group textarea:focus {
+    outline: none;
+    border-color: var(--main-color);
+}
+
+.btn-send-contact {
+    width: 100%;
+    background: var(--main-color);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: filter 0.2s;
+}
+
+.btn-send-contact:hover {
+    filter: brightness(90%);
+}
+
+.contact-status-msg {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.contact-status-msg.success { background: #e6ffed; color: #1e4620; border: 1px solid #c2e7cc; }
+.contact-status-msg.error { background: #fff1f0; color: #a8071a; border: 1px solid #ffa39e; }
+
+.action-btn.whatsapp-btn:hover i {
+    color: #128C7E !important; /* Egy kicsit sötétebb WhatsApp zöld */
+    transform: scale(1.1);
+}
+
+
+
+/* Státusz tároló */
+.chataiwd-header #dispatcher-status-container {
+    position: absolute;
+    right: 10px;    /* Az X gomb vonalában */
+    bottom: -10px;      /* Az X gomb alatt */
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    z-index: 10;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+    color: color-mix(in srgb, var(--main-color), white 90%);
+}
+
+.chataiwd-header .dispatcher-status-hidden {
+    opacity: 0;
+    transform: translateY(-5px);
+    pointer-events: none;
+}
+
+#dispatcher-status-container:not(.dispatcher-status-hidden) {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* A pötty alapstílusa */
+.chataiwd-header .chat-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.chataiwd-header .chat-status-dot.offline { background-color: #bbb; }
+
+.chataiwd-header .chat-status-dot.online {
+    background-color: #28a745;
+    box-shadow: 0 0 0 rgba(40, 167, 69, 0.4);
+    animation: pulse-green 2s infinite;
+}
+.chataiwd-header  .chat-status-dot.offline {
+    background-color: #bbb;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(0.90); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
+    100% { transform: scale(0.90); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+/* A csengő gomb alapból legyen rejtve, ha nincs online diszpécser */
+.chataiwd-header #btn-call-human { display: none; }
+
+.dispatcher-teaser {
+    border-left: 4px solid #ffc107; /* Figyelemfelkeltő sárga/arany csík */
+    cursor: pointer;
+    z-index: 999;
+}
+
+.dispatcher-teaser.hidden {
+    display: none !important;
+}
+
+.teaser-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-size: 10px;
+    color: #666;
+}
+
+.chataiwd-card {
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 10px 0;
+    width: 220px; /* Fix szélesség a chat buborékhoz igazítva */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: inline-block;
+}
+
+.chataiwd-card-image img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    background: #f9f9f9;
+    padding: 10px;
+}
+
+.chataiwd-card-body {
+    padding: 12px;
+}
+
+.chataiwd-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.chataiwd-card-title a {
+    text-decoration: none;
+    color: #333;
+}
+
+.chataiwd-card-price {
+    margin-bottom: 12px;
+}
+
+.price-normal, .price-new {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 15px;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.chataiwd-card-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.btn-group-sm {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-group-sm button {
+    flex: 1;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 12px;
+}
+
+.chataiwd-product-holder {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 0;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.chataiwd-product-holder .chataiwd-card {
+    flex: 0 1 max(190px, 32%);
+    display: flex;             /* Legyen ez is flex konténer */
+    flex-direction: column;    /* Egymás alatt legyenek az elemek */
+    justify-content: space-between; /* Tolja el a gombokat az aljára */
+    max-width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 5px;
+}
+
+.chataiwd-card-body {
+    flex-grow: 1;              /* Ez a rész töltse ki a maradék helyet */
+    display: flex;
+    flex-direction: column;
+}
+
+.chataiwd-card-buttons {
+    margin-top: auto;          /* Biztosítja, hogy a gombok mindig legalul legyenek */
+}
+
+
+
+/* Gyorsnézet gomb alapstílusa */
+.chataiwd-quickview-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Ikon és szöveg távolsága */
+    padding: 8px 15px;
+    background-color: #ffffff; /* Fehér háttér */
+    color: #666; /* Szolid szürke felirat */
+    border: 1px solid #ddd; /* Vékony világosszürke keret */
+    border-radius: 4px; /* Enyhén lekerekített sarkok */
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease; /* Finom animáció */
+    cursor: pointer;
+    flex: 1; /* Hogy kitöltse a rendelkezésre álló helyet a gombcsoportban */
+}
+
+/* Hover (egér felette) állapot */
+.chataiwd-quickview-btn:hover {
+    background-color: #f8f9fa; /* Halvány szürke háttér */
+    color: #333; /* Sötétebb szöveg */
+    border-color: #bbb; /* Kicsit hangsúlyosabb keret */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Nagyon enyhe árnyék */
+}
+
+/* Ikon stílusa a gombban */
+.chataiwd-quickview-btn i {
+    font-size: 13px;
+    color: #888;
+}
+
+/* Gombok elrendezése a kártyán belül */
+.chataiwd-card-buttons {
+    display: flex;
+    gap: 10px; /* Távolság a két gomb között */
+    margin-top: 15px;
+}
+
+/* Ha a Kosár gombod is kapjon egy alap stílust, hogy passzoljanak */
+.btn-cart {
+    flex: 1;
+    padding: 8px 15px;
+    background: #ffc107; /* Asztalos sárga :) */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn-cart:hover {
+    background: #e5af06;
+}
+
+#product-quickview .image-container > img {
+    border: none;
+    cursor: default;
+
+}
+
+.image-additional-wrapper img {
+    width: 75px;
+    height: 75px;
+    cursor: pointer;
+}
+
+#chataiwd-modal .modal-header {
+    border-bottom: none;
+}
+
+#modal-alert-container {
+    position: absolute;
+    top: 0;
+    margin-left: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+#chataiwd-modal .modal-dialog {
+    --bs-modal-width: min(800px, 90%);
+}
+
+/* Opcionális: Ha azt akarod, hogy mobilon még több hely legyen,
+   de asztalin maradjon a 600px korlát */
+@media (max-width: 576px) {
+    #chataiwd-modal .modal-dialog {
+        --bs-modal-width: 95%; /* Mobilon majdnem faltól falig */
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+.auth-divider {
+    margin: 6px;
+    color: inherit;
+    border: 0;
+    border-top: var(--bs-border-width) solid;
+    opacity: 0.25;
+}
+
+.oc-quick-login-zone p {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+
+
+.chataiwd-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+.auth-form input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%; /* Teljes szélesség */
+    max-width: 100%;
+}
+
+
+
+
+.oc-quick-login-zone {
+    padding: 10px;
+    background: #fdfae6; /* Halvány sárga háttér a kiemelésnek */
+    border: 1px solid #f9f1c0;
+    border-radius: 6px;
+    margin: 5px 15px;
+    text-align: center;
+}
+
+.btn-oc-login {
+    background: #2c3e50 !important;
+    color: #fff !important;
+    padding: 8px 15px !important;
+    border-radius: 20px !important;
+    margin-top: 5px;
+    width: auto !important;
+    display: inline-flex !important;
+}
+
+.system-error-msg {
+    animation: slideInError 0.4s ease-out;
+}
+
+@keyframes slideInError {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+/* Minden akció gombot és az inputot tiltjuk */
+.chat-fatal-error {
+    pointer-events: none !important;
+    opacity: 0.4 !important;
+    filter: grayscale(100%) !important;
+}
+.cart-icon-bg {
+    background: var(--main-color);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+}
+
+.share-cart-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.share-cart-header i {
+    font-size: 2em;
+    color: var(--main-color);
+}
+
+.btn-share-send {
+    width: 100%;
+    background: var(--main-color);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.share-btn.active-pulse {
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.cart-share-teaser {
+    cursor: pointer;
+}
+.share-btn {
+    position: relative; /* Hogy a buborék hozzá képest igazodjon */
+}
+
+.share-btn-bubble {
+    position: absolute;
+    top: 105%;
+    left: 60%;
+    transform: translateX(-60%);
+    color: #000000;
+    padding: 2px 4px;
+    border-radius: 0px 4px 4px 0;
+    font-size: 10px;
+    font-weight: 100;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.8;
+    background: rgb(255 255 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: #f0f0f0;
+    box-shadow: 0 2px 10px rgb(162 162 162);
+    border-left: 2px solid var(--main-color);
+}
+
+/* A buborék kis nyila */
+.share-btn-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: 101%;
+    left: 55%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #ffffff transparent;
+}
+
+
+.chataiwd-container ::before,
+.chataiwd-container ::after {
+    font-weight: 900 !important;
+}
+
+/* 1. KÖZÖS SZABÁLY: Minden ikonra a gombnál és a chat ablakban */
+.chataiwd-open-btn-wrapper [class*="fa-"],
+.chataiwd-container [class*="fa-"] {
+    font-style: normal !important;
+    display: inline-block !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+/* 2. SOLID IKONOK (X, Megosztás, Küldés) - Kényszerített 900-as súly */
+.chataiwd-open-btn-wrapper [class*="fa-"]:not(.fab):not(.fa-brands):not(.fa-whatsapp),
+.chataiwd-container [class*="fa-"]:not(.fab):not(.fa-brands):not(.fa-whatsapp),
+.chataiwd-open-btn-wrapper ::before,
+.chataiwd-container ::before {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}
+
+/* 3. MÁRKÁK (WhatsApp) - Kényszerített 400-as súly */
+/* Itt adtuk meg most már a wrapper-t is, így jó lesz a lebegő gomb ikonja is */
+.chataiwd-open-btn-wrapper .fa-brands,
+.chataiwd-open-btn-wrapper .fab,
+.chataiwd-open-btn-wrapper .fa-whatsapp,
+.chataiwd-container .fa-brands,
+.chataiwd-container .fab,
+.chataiwd-container .fa-whatsapp,
+.chataiwd-open-btn-wrapper .fa-whatsapp::before,
+.chataiwd-container .fa-whatsapp::before {
+    font-family: "Font Awesome 6 Brands" !important;
+    font-weight: 400 !important;
+}
+
+/* 4. KONKRÉT KARAKTER FIXEK (Ha a tartalom eltűnne) */
+[class*="fa-whatsapp"]::before { content: "\f232" !important; }
+[class*="fa-share-nodes"]::before { content: "\f1e0" !important; }
+[class*="fa-xmark"]::before, [class*="fa-times"]::before { content: "\f00d" !important; }
+
+/* Ha a mobil kijelzője szűkebb, mint 341px, összepréseljük a kártyát, hogy a kerék középen maradjon */
+
+@media (max-width: 440px) {
+    .vrcs-wheel-wrapper {
+        width: 220px !important;
+        height: 220px !important;
+    }
+}
+@media (max-width: 430px) {
+    .vrcs-wheel-wrapper {
+        width: 215px !important;
+        height: 215px !important;
+    }
+}
+@media (max-width: 425px) {
+    .vrcs-wheel-wrapper {
+        width: 210px !important;
+        height: 210px !important;
+    }
+}
+@media (max-width: 420px) {
+    .vrcs-wheel-wrapper {
+        width: 205px !important;
+        height: 205px !important;
+    }
+}
+@media (max-width: 415px) {
+    .vrcs-wheel-wrapper {
+        width: 200px !important;
+        height: 200px !important;
+    }
+}
+
+@media (max-width: 410px) {
+    .vrcs-wheel-wrapper {
+        width: 195px !important;
+        height: 195px !important;
+    }
+}
+@media (max-width: 405px) {
+    .vrcs-wheel-wrapper {
+        width: 193px !important;
+        height: 193px !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .vrcs-wheel-wrapper {
+        width: 191px !important;
+        height: 191px !important;
+    }
+}
+@media (max-width: 395px) {
+    .vrcs-wheel-wrapper {
+        width: 189px !important;
+        height: 189px !important;
+    }
+}
+@media (max-width: 390px) {
+    .vrcs-wheel-wrapper {
+        width: 183px !important;
+        height: 183px !important;
+    }
+}
+@media (max-width: 385px) {
+    .vrcs-wheel-wrapper {
+        width: 181px !important;
+        height: 181px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .vrcs-wheel-wrapper {
+        width: 175px !important;
+        height: 175px !important;
+    }
+}
+@media (max-width: 375px) {
+    .vrcs-wheel-wrapper {
+        width: 170px !important;
+        height: 170px !important;
+    }
+}
+@media (max-width: 370px) {
+    .vrcs-wheel-wrapper {
+        width: 167px !important;
+        height: 167px !important;
+    }
+}
+@media (max-width: 365px) {
+    .vrcs-wheel-wrapper {
+        width: 165px !important;
+        height: 165px !important;
+    }
+}
+@media (max-width: 360px) {
+    .vrcs-wheel-wrapper {
+        width: 160px !important;
+        height: 160px !important;
+    }
+}
+@media (max-width: 355px) {
+    .vrcs-wheel-wrapper {
+        width: 155px !important;
+        height: 155px !important;
+    }
+}
+@media (max-width: 350px) {
+    .vrcs-wheel-wrapper {
+        width: 150px !important;
+        height: 150px !important;
+    }
+}
+@media (max-width: 345px) {
+    .vrcs-wheel-wrapper {
+        width: 145px !important;
+        height: 145px !important;
+    }
+}
+@media (max-width: 340px) {
+    .vrcs-wheel-wrapper {
+        width: 142px !important;
+        height: 142px !important;
+    }
+    /*.vrcs-responsive-widget {
+        width: 235px !important;
+    }
+    .vrcs-fortune-wheel-canvas {
+        width: 96% !important;
+        height: 96% !important;
+    }*/
+}
+@media (max-width: 335px) {
+    .vrcs-wheel-wrapper {
+        width: 140px !important;
+        height: 140px !important;
+    }
+}
+@media (max-width: 330px) {
+    .vrcs-wheel-wrapper {
+        width: 135px !important;
+        height: 135px !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .vrcs-wheel-wrapper {
+        width: 125px !important;
+        height: 125px !important;
+    }
+    /*.vrcs-responsive-widget {
+        width: 235px !important;
+    }
+    .vrcs-fortune-wheel-canvas {
+        width: 94% !important;
+        height: 94% !important;
+    }*/
+}
+
+@media (max-width: 310px) {
+    .vrcs-wheel-wrapper {
+        width: 120px !important;
+        height: 120px !important;
+    }
+    /*.vrcs-responsive-widget {
+        width: 235px !important;
+    }
+    .vrcs-fortune-wheel-canvas {
+        width: 94% !important;
+        height: 94% !important;
+    }*/
+}
+@media (max-width: 300px) {
+    .vrcs-wheel-wrapper {
+        width: 110px !important;
+        height: 110px !important;
+    }
+
+}

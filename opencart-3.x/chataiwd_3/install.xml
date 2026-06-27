@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>chatgpt</name>
+    <code>chatgpt</code>
+    <description>Chat GPT</description>
+    <version>3.3.0.3</version>
+    <author>VRCS Studio</author>
+    <link>https://vrcs.hu</link>
+
+</modification>

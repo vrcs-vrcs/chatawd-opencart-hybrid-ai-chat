@@ -1,0 +1,411 @@
+{# extension/chataiwd/view/template/module/chataiwd.twig #}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script src="https://cdn.jsdelivr.net/npm/picmo@latest/dist/umd/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@picmo/popup-picker@latest/dist/umd/index.js"></script>
+
+<style>
+    :root {
+        --main-color: {{ config.chat_color }};
+    }
+</style>
+
+<link rel="stylesheet" href="{{ css_url }}">
+<link rel="stylesheet" href="{{ css_product_url }}">
+<script>
+    window.config = {{ config|json_encode|raw }};
+</script>
+
+<!-- Chat megnyitó gomb -->
+<div class="chataiwd-open-btn-wrapper">
+    <div class="chat-welcome-bubble" id="chat-welcome-bubble">
+        <img src="{{ ai_img }}" class="bubble-avatar">
+        <div class="bubble-text">
+            {{ welcome_message | raw }}
+        </div>
+    </div>
+
+    <div class="chat-welcome-bubble dispatcher-teaser hidden" id="dispatcher-teaser-bubble">
+        <div class="teaser-close" onclick="event.stopPropagation(); document.getElementById('dispatcher-teaser-bubble').classList.add('hidden');">
+            <i class="fa fa-times"></i>
+        </div>
+        <img src="{{ human_img }}" class="bubble-avatar" id="teaser-avatar">
+        <div class="bubble-text">
+            <strong id="teaser-name" style="display:block; font-size: 0.8em; opacity: 0.8;">{{ text_diszpatcher }}</strong>
+            <span id="teaser-message">...</span>
+        </div>
+    </div>
+
+    <div class="chat-welcome-bubble cart-share-teaser hidden" id="cart-share-teaser-bubble" onclick="openChataiwd('share_cart')">
+        <div class="teaser-close" onclick="closeCartTeaser(event)">
+            <i class="fa fa-times"></i>
+        </div>
+        <div class="bubble-avatar cart-icon-bg">
+            <i class="fa fa-share-nodes"></i>
+        </div>
+        <div class="bubble-text">
+            <strong style="display:block; font-size: 0.9em;">{{ text_share_cart_title }}</strong>
+            <span style="font-size: 0.85em;">{{ text_share_cart_teaser }}</span>
+        </div>
+    </div>
+
+    <div class="chataiwd-open-btn" onclick="openChataiwd()">
+        <i class="fa fas fa-comments"></i>
+        {{ chat_button }}
+    </div>
+</div>
+
+<!-- Chat ablak -->
+<div class="chataiwd-container" id="chataiwd-container">
+
+    <div id="chat-consent-overlay" class="hidden">
+
+        <span class="close-btn-overlay" onclick="closeChataiwd()" title="{{ text_close_chat }}">
+            <i class="fa fa-times"></i>
+        </span>
+
+        <div class="consent-modal" id="consent-main-view">
+            <i class="fa fa-shield-halved fa-3x mb-3" style="color: var(--main-color);"></i>
+            <h3>{{ text_chat_consent_title }}</h3>
+            <p>{{ text_chat_consent_message }}</p>
+
+            <div class="consent-links">
+                <a href="javascript:void(0);" onclick="showLegal('privacy')">{{ text_privacy_policy }}</a>
+                <a href="javascript:void(0);" onclick="showLegal('terms')">{{ text_terms_of_service }}</a>
+            </div>
+
+            <button class="btn-accept" onclick="acceptChatConsent()">
+                {{ text_accept_and_continue }}
+            </button>
+
+            <div class="decline-link">
+                <a href="javascript:void(0);" onclick="closeChataiwd()">{{ text_decline_and_close }}</a>
+            </div>
+        </div>
+
+        <div id="legal-privacy-view" class="legal-inner-modal hidden">
+            <div class="legal-header">
+                <h4>{{ text_privacy_title }}</h4>
+                <span class="close-inner" onclick="showLegal('main')"><i class="fa fa-arrow-left"></i></span>
+            </div>
+            <div class="legal-body">
+                {{ text_privacy_content }}
+            </div>
+        </div>
+
+        <div id="legal-terms-view" class="legal-inner-modal hidden">
+            <div class="legal-header">
+                <h4>{{ text_terms_title }}</h4>
+                <span class="close-inner" onclick="showLegal('main')"><i class="fa fa-arrow-left"></i></span>
+            </div>
+            <div class="legal-body">
+                {{ text_terms_content }}
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="chataiwd-header">
+        <div class="chataiwd-header-ikons">
+            {#<span id="chataiwd-status-icon" class="status-icon">
+                {# <i class="fa fas fa-robot" style="color: #00b7eb;"></i></span>#}
+             <span id="chataiwd-status-icon" class="status-icon"><img src="{{ ai_img }}" class="ai_img img-ai-human-header"></span>
+
+            <span id="chataiwd-heading">{{ ai_response_header }}</span>
+            <span class="close-btn" onclick="closeChataiwd()"><i class="fa fas fa-times"></i></span>
+
+
+            <div id="dispatcher-status-container" class="dispatcher-status-hidden">
+                <span class="chat-status-dot offline"></span>
+                <span class="chat-status-text">{{ text_operator_label|default('Operator') }}</span>
+            </div>
+        </div>
+
+
+
+        <div class="auth-bar" id="auth-bar">
+            <div id="auth-btns">
+                <i class="fa fas fa-user"></i>
+                <button id="auth-button-login" class="auth-btn">{{ text_login }}</button>
+                <span class="button_per">/</span>
+                <button id="auth-button-register" class="auth-btn">{{ text_reigster }}</button>
+
+                {% if customer_logged_in %}
+                    <div class="oc-quick-login-zone">
+                        <p><strong>{{ customer_name }}</strong>!</p>
+                        <button onclick="createNewChatAccount()" class="auth-btn btn-oc-login">
+                            <i class="fa fa-sign-in"></i> {{ text_login_with_oc }}
+                        </button>
+                        <hr class="auth-divider">
+                        <p><small>{{ text_or_manual_login }}</small></p>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Mindig rendereljük a status div-et, hidden class-szal #}
+            <div id="auth-status" class="auth-status hidden"></div>
+
+            {# Linking offer, ha szükséges - JS kezeli #}
+            <div id="linking-offer" class="auth-status hidden">
+                <p>{{ text_offer_linking }}</p>
+                <button class="auth-btn" onclick="showLinkingForm()">{{ text_link_accounts }}</button>
+                <button class="auth-btn" onclick="createNewChatAccount()">{{ text_create_new }}</button>
+            </div>
+
+
+            {# Linking form (hidden, JS kezeli) #}
+            <div id="linking-form" class="auth-form hidden">
+                <span class="close-btn" onclick="$(this).parent().addClass('hidden');"><i class="fa fas fa-times"></i></span>
+
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">
+                        {{ text_chat_email }}
+                    </label>
+                    <div class="col-sm-9">
+                        <input type="email" id="chat-email" name="auth_email" class="form-control" placeholder="{{ text_chat_email }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">
+                        {{ text_chat_password }}
+                    </label>
+                    <div class="col-sm-9">
+                        <input type="password" id="chat-password" name="auth_password" class="form-control" placeholder="{{ text_chat_password }}">
+                    </div>
+                </div>
+                <button onclick="linkAccounts()">{{ text_send }}</button>
+            </div>
+        </div>
+
+        {# Anonim előzmények betöltése után megjelenő gomb (csak logged-in usernek) #}
+        <div id="anonymous-history-merge" class="auth-status hidden" >
+            <p><strong>{{ text_anonymous_merge_prompt }}</strong><br></p>
+            <button class="auth-btn" onclick="mergeAnonymousHistory()">
+                {{ text_merge_button }}
+            </button>
+            <button class="auth-btn" onclick="notMergeAnonymousHistory()">
+                {{ text_merge_cancel }}
+            </button>
+        </div>
+    </div>
+
+
+
+    <div class="chataiwd-body" id="chataiwd-body">
+
+        <div id="share-cart-form" class="auth-form hidden">
+            <span class="close-btn" onclick="$('#share-cart-form').addClass('hidden');"><i class="fa fas fa-times"></i></span>
+
+            <div class="share-cart-header">
+                <i class="fa fa-envelope-open-text"></i>
+                <h4>{{ text_share_cart_header }}</h4>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <input type="text" id="share-sender-name" class="form-control" placeholder="{{ text_sender_name_placeholder }}" value="{{ customer_name }} {{ customer_last_name }}">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <input type="email" id="share-recipient-email" class="form-control" placeholder="{{ text_recipient_email_placeholder }}">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <textarea id="share-message" class="form-control" rows="2" placeholder="{{ text_share_message_placeholder }}"></textarea>
+                </div>
+            </div>
+
+            <button onclick="submitShareCart()" class="btn-share-send">
+                <i class="fa fa-paper-plane"></i> {{ text_send_share }}
+            </button>
+        </div>
+
+
+
+        <div id="auth-form-login" class="auth-form hidden">
+            <span class="close-btn" onclick="$('#auth-form-login').addClass('hidden');"><i class="fa fas fa-times"></i></span>
+
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">
+                    {{ text_chat_email }}
+                </label>
+                <div class="col-sm-9">
+                    <input type="email" name="auth_email" value="{{ auth_email }}" class="form-control" placeholder="{{ text_chat_email }}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">
+                    {{ text_chat_password }}
+                </label>
+                <div class="col-sm-9">
+                    <input type="password" name="auth_password" value="{{ auth_password }}" class="form-control" placeholder="{{ text_chat_password }}">
+                </div>
+            </div>
+
+            <button onclick="submitAuthFormLogin()">{{ text_send }}</button>
+        </div>
+
+
+        <div id="auth-form-register" class="auth-form hidden">
+            <span class="close-btn" onclick="$('#auth-form-register').addClass('hidden');"><i class="fa fas fa-times"></i></span>
+
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">
+                    {{ text_chat_name }}
+                </label>
+                <div class="col-sm-9">
+                    <input type="text" name="auth_name" value="{{ auth_name }}" class="form-control" placeholder="{{ text_chat_name }}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">
+                    {{ text_chat_email }}
+                </label>
+                <div class="col-sm-9">
+                    <input type="email" name="auth_email" value="{{ auth_email }}" class="form-control" placeholder="{{ text_chat_email }}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">
+                    {{ text_chat_password }}
+                </label>
+                <div class="col-sm-9">
+                    <input type="password" name="auth_password" value="{{ auth_password }}" class="form-control" placeholder="{{ text_chat_password }}">
+                </div>
+            </div>
+
+            <button onclick="submitAuthFormRegister()">{{ text_send }}</button>
+        </div>
+
+
+
+
+
+        <div class="chataiwd-message bot" style="width: fit-content; float: none;">
+            <div class="message-content">{{ welcome_message | raw }}</div>
+        </div>
+
+        <div id="faq-overlay" style="display: none;">
+            <div class="faq-overlay-header">
+                <span>{{ text_faq_title }}</span>
+                <i class="fas fa-times" onclick="$('#faq-overlay').fadeOut();"></i>
+            </div>
+            <div id="faq-grid-container">
+            </div>
+        </div>
+        <div id="information-contact" style="display: none;">
+            <div class="information-contact-header">
+                <span>{{ text_information_contact_title }}</span>
+                <i class="fas fa-times" onclick="$('#information-contact').fadeOut();"></i>
+            </div>
+            <div id="information-contact-container">
+            </div>
+        </div>
+        <div id="chat-history-loader" style="display: none;">
+            <div class="loader-overlay">
+                <img src="{{ loader_gif }}" alt="Loading..." class="loader-gif">
+                <p>{{ text_loading_history|default('Loading chat history ...') }}</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="footer-ai drop-area">
+        <div class="chataiwd-status" id="chataiwd-footer-status">
+            <img src="{{ ai_img }}" class="ai_img img-ai-human">
+            <span>{{ ai_response_indicator }}</span>
+        </div>
+        <div id="file-name-container" class="file-name-container">
+            <div class="file-info-row">
+                <span id="file-name" class="file-name"></span>
+                <button id="file-clear-btn" class="file-clear-btn" title="{{ text_delete_file|default('Delete file') }}"><i class="fa fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="chataiwd-footer">
+            <div id="voice-loader" class="voice-visualizer">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <textarea id="chataiwd-input" rows="1" placeholder="{{ text_type_message }}"></textarea>
+
+            <div class="composer-actions-bar">
+                <div class="left-actions">
+
+                    <button type="button"
+                                id="btn-share-cart"
+                                class="action-btn share-btn hidden"
+                                {# title="{{ text_share_cart_title }}" #}
+                                onclick="toggleShareCartOverlay()">
+                            <i class="fa-solid fa-share-nodes" style="color: var(--main-color);"></i>
+                        <span class="share-btn-bubble">{{ text_share_cart_header }}</span>
+                    </button>
+
+
+                    {% if tool_image %}
+                        <button type="button" class="action-btn file-upload-btn" title="{{ text_upload_file|default('Upload file') }}">
+                            <i class="fa fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="file-input" style="display: none;" accept="image/*,application/pdf">
+                    {% endif %}
+
+                    {% if tool_emoji %}
+                        <button type="button" id="emoji-picker-button" class="action-btn emoji-btn" title="{{ text_emoji_selector|default('Emoji selector') }}">
+                            <i class="fa-regular fa-face-smile"></i>
+                        </button>
+                    {% endif %}
+
+                    {% if tool_faq and has_active_faq %}
+                        <button type="button" id="faq-picker-button" class="action-btn faq-btn" title="{{ text_faq_title }}">
+                            <i class="fa-solid fa-circle-question text-primary-ai"></i>
+                        </button>
+                    {% endif %}
+
+                    {% if tool_voice %}
+                        <button type="button" id="btn-voice-trigger" class="action-btn voice-btn" title="{{ text_voice }}">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                    {% endif %}
+
+                    {% if tool_email %}
+                        <button type="button" id="btn-contact-trigger" class="action-btn contact-btn" title="{{ text_contact }}">
+                            <i class="fa-regular fa-envelope"></i>
+                        </button>
+                    {% endif %}
+
+                    {% if tool_whatsapp %}
+                        <button type="button"
+                                class="action-btn whatsapp-btn"
+                                onclick="chataiwdOpenWhatsApp({{ whatsapp_number }})"
+                                title="{{ text_chat_whatsapp }}">
+
+                            <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i>
+                        </button>
+                    {% endif %}
+
+                    {% if tool_bell %}
+                        <button type="button" id="btn-call-human" class="action-btn bell-btn" title="{{ text_call_human }}">
+                            <i class="fa-solid fa-bell text-warning"></i>
+                        </button>
+                    {% endif %}
+
+                </div>
+                <div class="right-actions">
+                    <button onclick="sendChataiwdMessage()" class="send-message-button" id="send-message-button"><i class="fa fas fa-arrow-right rotate-up"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chataiwd-open-btn close-mini" onclick="closeChataiwd()">
+            <i class="fa fas fa-comments"></i>
+        </div>
+        <div class="power-by">AI Chat by <a href="https://vrcs.hu" target="_blank">vrcs.hu</a> – Get it for your store</div>
+    </div>
+</div>
+
+<script src="{{ js_url }}"></script>
+<script src="{{ js_product_url }}"></script>

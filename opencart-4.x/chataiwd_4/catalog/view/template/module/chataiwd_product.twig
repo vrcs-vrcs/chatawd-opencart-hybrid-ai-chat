@@ -1,0 +1,35 @@
+{# extension/chataiwd/view/template/module/chataiwd_product.twig #}
+<div class="chataiwd-card">
+    <div class="chataiwd-card-image">
+        <a href="{{ href }}"><img src="{{ thumb }}" alt="{{ name }}" title="{{ name }}" /></a>
+    </div>
+    <div class="chataiwd-card-body">
+        <h4 class="chataiwd-card-title"><a href="{{ href }}">{{ name }}</a></h4>
+
+        {% if price %}
+            <div class="chataiwd-card-price">
+                {% if not special %}
+                    <span class="price-normal">{{ price }}</span>
+                {% else %}
+                    <span class="price-new">{{ special }}</span> <span class="price-old">{{ price }}</span>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {# Eltávolítva a gyári OC AJAX toggle, helyette saját osztály a JS-nek #}
+        <form class="form-chataiwd-cart">
+            <div class="chataiwd-card-buttons">
+                <button type="button" class="btn-quickview chataiwd-quickview-btn" data-href="{{ href }}">
+                    <i class="fa-solid fa-eye"></i> {{ button_quickview|default('Quick view') }}
+                </button>
+                {# Gomb típusa submit, hogy a form eseménykezelő elkapja #}
+                <button type="submit" class="btn-cart" title="{{ button_cart }}">
+                    <i class="fa-solid fa-shopping-cart"></i> {{ button_cart }}
+                </button>
+            </div>
+            <input type="hidden" name="product_id" value="{{ product_id }}"/>
+            <input type="hidden" name="quantity" value="{{ minimum }}"/>
+        </form>
+    </div>
+</div>
+

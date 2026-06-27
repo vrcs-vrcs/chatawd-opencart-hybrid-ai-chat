@@ -1,0 +1,366 @@
+{# extension/chataiwd/view/template/module/chataiwd_product_info.twig #}
+<div class="iwd-overlay"></div>
+<div class="iwd-modal-wrapper" id="chataiwd-modal">
+    <div class="iwd-modal-card">
+        <span class="iwd-modal-close" onclick="closeChataiwd()">&times;</span>
+
+        <div id="product-quickview" class="product-quickview">
+
+            <div id="modal-alert-container" style="display: none"></div>
+            <div class="qv-container">
+                <div class="qv-left">
+                    <div class="image-container">
+                        {% if thumb %}
+                            <img src="{{ thumb }}" id="main-product-image" title="{{ heading_title }}" alt="{{ heading_title }}"/>
+                        {% endif %}
+                    </div>
+
+                    {% if images %}
+                        <div class="image-additional-wrapper">
+                            {% for image in images %}
+                                <img src="{{ image.thumb }}"
+                                     data-full="{{ image.popup }}"
+                                     class="thumb-swap"
+                                     alt="{{ heading_title }}"/>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="qv-right">
+                    <h1>{{ heading_title }}</h1>
+                    <ul style="list-style:none; padding:0; line-height:1.6;">
+                        <li><b>{{ text_model }}</b> {{ model }}</li>
+                        <li><b>{{ text_stock }}</b> {{ stock }}</li>
+                    </ul>
+
+                    <div class="price-section">
+                        {% if price %}
+                            {% if not special %}
+                                <span class="price-new">{{ price }}</span>
+                            {% else %}
+                                <span class="price-old">{{ price }}</span>
+                                <span class="price-new">{{ special }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <hr>
+                    <form method="post" id="form-product-qv">
+
+                        {% for option in options %}
+
+                            {% if option.type == 'select' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label for="input-option-{{ option.product_option_id }}" class="form-label">{{ option.name }}</label>
+                                    <select name="option[{{ option.product_option_id }}]" id="input-option-{{ option.product_option_id }}" class="iwd-select">
+                                        <option value="">{{ text_select }}</option>
+                                        {% for option_value in option.product_option_value %}
+                                            <option value="{{ option_value.product_option_value_id }}">{{ option_value.name }}
+                                                {% if option_value.price %}
+                                                    ({{ option_value.price_prefix }}{{ option_value.price }})
+                                                {% endif %}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'radio' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label class="form-label">{{ option.name }}</label>
+                                    <div id="input-option-{{ option.product_option_id }}">
+                                        {% for option_value in option.product_option_value %}
+                                            <div class="iwd-option-row">
+                                                <input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" id="input-option-value-{{ option_value.product_option_value_id }}" class="iwd-option-input"/>
+                                                <label for="input-option-value-{{ option_value.product_option_value_id }}" class="iwd-option-label-text">
+                                                    {% if option_value.image %}
+                                                        <img src="{{ option_value.image }}" alt="{{ option_value.name }} {% if option_value.price %}{{ option_value.price_prefix }} {{ option_value.price }}{% endif %}" class="img-thumbnail"/>{% endif %}
+                                                    {{ option_value.name }}
+                                                    {% if option_value.price %}
+                                                        ({{ option_value.price_prefix }}{{ option_value.price }})
+                                                    {% endif %}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'checkbox' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label class="form-label">{{ option.name }}</label>
+                                    <div id="input-option-{{ option.product_option_id }}">
+                                        {% for option_value in option.product_option_value %}
+                                            <div class="iwd-option-row">
+                                                <input type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" id="input-option-value-{{ option_value.product_option_value_id }}" class="form-check-input"/>
+                                                <label for="input-option-value-{{ option_value.product_option_value_id }}" class="form-check-label">
+                                                    {% if option_value.image %}
+                                                        <img src="{{ option_value.image }}" alt="{{ option_value.name }} {% if option_value.price %}{{ option_value.price_prefix }} {{ option_value.price }}{% endif %}" class="img-thumbnail"/>{% endif %}
+                                                    {{ option_value.name }}
+                                                    {% if option_value.price %}
+                                                        ({{ option_value.price_prefix }}{{ option_value.price }})
+                                                    {% endif %}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'text' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label for="input-option-{{ option.product_option_id }}" class="form-label">{{ option.name }}</label> <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option-{{ option.product_option_id }}" class="iwd-control"/>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'textarea' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label for="input-option-{{ option.product_option_id }}" class="form-label">{{ option.name }}</label> <textarea name="option[{{ option.product_option_id }}]" rows="5" placeholder="{{ option.name }}" id="input-option-{{ option.product_option_id }}" class="iwd-control">{{ option.value }}</textarea>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'file' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label for="button-upload-{{ option.product_option_id }}" class="form-label">{{ option.name }}</label>
+                                    <div class="iwd-upload-container">
+                                        <button type="button"
+                                                id="button-upload-{{ option.product_option_id }}"
+                                                class="iwd-btn-upload"
+                                                data-loading-text="{{ text_uploading|default('Uploading...') }}">
+                                            <i class="fa-solid fa-upload"></i> {{ button_upload }}
+                                        </button>
+
+                                        <div id="iwd-upload-filename-{{ option.product_option_id }}" class="iwd-upload-info"></div>
+                                        <input type="hidden" name="option[{{ option.product_option_id }}]" value="" id="input-option-{{ option.product_option_id }}"/>
+                                    </div>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'date' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label for="input-option-{{ option.product_option_id }}" class="form-label">{{ option.name }}</label>
+                                    <input type="date" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" id="input-option-{{ option.product_option_id }}" class="iwd-control"/>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'time' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label for="input-option-{{ option.product_option_id }}" class="form-label">{{ option.name }}</label>
+                                    <input type="time" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" id="input-option-{{ option.product_option_id }}" class="iwd-control"/>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if option.type == 'datetime' %}
+                                <div class="qv-form-group{% if option.required %} required{% endif %}">
+                                    <label for="input-option-{{ option.product_option_id }}" class="form-label">{{ option.name }}</label>
+                                    <input type="datetime-local" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" id="input-option-{{ option.product_option_id }}" class="iwd-control"/>
+                                    <div id="error-option-{{ option.product_option_id }}" class="iwd-invalid-feedback"></div>
+                                </div>
+                            {% endif %}
+
+                            {% set multiple = false %}
+                            {% if option.type == 'multiple' %}
+
+                                {% set display_button = false %}
+                                {% set multiple = true %}
+
+                                <div id="input-option{{ option.product_option_id }}" class="table-responsive tntkk" style="text-align:center; ">
+                                    <table class="table table-bordered table-hover" style="font-size:13px;">
+                                        <tr style="background: #dddddd; line-height: 20px; font-weight: bold;">
+                                            <td>{{ option.name }}</td>
+                                            <td>{{ text_price }}</td>
+                                            <td class="mobile-hidden"></td>
+                                            {% if me_class_id and me_class_id == 11 %}
+                                                <td>{{ text_length }}</td>
+                                            {% endif %}
+                                            <td>{{ text_qty }}</td>
+                                            <td></td>
+                                        </tr>
+
+                                        {% for option_value in option.product_option_value %}
+                                            <tr style="background: #eeeeee; padding-left: 6px;">
+                                                <td style="vertical-align:middle">{{ option_value.name }}</td>
+                                                <td style="vertical-align:middle">{{ option_value.total_price }}</td>
+
+                                                <td class="mobile-hidden">
+                                                    {% if option_value.quantity >= 1 %}
+                                                        <span style="color:green;"><i class="fa fa-dot-circle-o"></i></span>
+                                                    {% else %}
+                                                        <span style="color:red;"><i class="fa fa-dot-circle-o"></i></span>
+                                                    {% endif %}
+                                                </td>
+
+                                                {% if me_class_id and me_class_id == 11 %}
+
+                                                    <td><input type="number"  size="2"  {% if option_value.quantity < 1 %} disabled {% endif %} style="border: 0;width:60px; text-align:center;" data-optidx="{{ option_value.product_option_value_id }}" class="oquantityx_{{ option_value.product_option_value_id }}" size="2" value="{{ option_value.minfm }}" step="{{ step }}" max="{{ option_value.maxfm }}" min="{{ option_value.minfm }}"/></td>
+                                                {% else %}
+
+                                                    <td style="display: none;"><input type="number"  size="2" {% if option_value.quantity < 1 %} disabled {% endif %} style="border: 0;width:60px; text-align:center;" data-optidx="{{ option_value.product_option_value_id }}" class="oquantityx_{{ option_value.product_option_value_id }}" size="2" value="-0.01" /></td>
+                                                {% endif %}
+
+                                                <td style="vertical-align:middle"><input type="number"  size="2" {% if option_value.quantity < 1 %} disabled {% endif %}  min="0" style="border: 0;width:60px; text-align:center;" data-optid="{{ option_value.product_option_value_id }}" class="oquantity_vrcs_{{ option_value.product_option_value_id }}" size="2" value="0" step="1" /></td>
+                                                <td><img id="to_cart_vrcs_{{ option_value.product_option_value_id }}" src="./image/cart.png"  style="cursor:pointer;width:25px;height:25px;" data-p-id="{{ product_id }}" data-id="{{ option_value.product_option_value_id }}"/></td>
+                                            </tr>
+
+                                        {% endfor %}
+                                    </table>
+
+                                    <br />
+                                    <input type="hidden" id="option_vrcs" name="option[{{ option.option_id }}]" value="">
+                                    <input type="hidden" id="option_vxchat" name="option_vx" value="">
+                                    <input type="hidden" id="product_option_id_chat" value="{{ option.product_option_id }}">
+                                    <input type="button" value="{{ button_cart }}" id="add_group_to_cart_vrcs" class="add_group_to_cart_vrcs btn btn-block btn-primary">
+                                </div>
+
+                                <script>
+                                    $('.qv-form-group').fadeOut();
+                                    $('#add_group_to_cart_vrcs').click(function(){
+                                        $('input[class*="oquantity_vrcs_"]').each(function(){
+                                            if($(this).val()>0){
+                                                var id = parseInt($(this).attr('data-optid'));
+                                                $('#to_cart_vrcs_'+ id).trigger("click");
+                                            }
+                                        });
+                                    });
+
+                                    $('input[name*="oquantity"]').change(function(e){
+                                        $('#option_vrcs').val(e.target.dataset.optid);
+                                        $('input[name="quantity"]').val(e.target.value);
+                                    });
+
+                                    $('img[id*="to_cart"]').click(function(e){
+                                        $('#option_vrcs').val(e.target.dataset.id);
+                                        var option_vxchat =  $('.oquantityx_'+e.target.dataset.id).val();
+                                        var quantity_t = $('.oquantity_vrcs_'+e.target.dataset.id).val();
+                                        var optt = parseInt($('#product_option_id_chat').val());
+                                        var option_vrcs = parseInt($('#option_vrcs').val());
+                                        var opt = {};
+                                        opt[optt] = option_vrcs;
+
+                                        if (quantity_t > 0) {
+
+                                            $.ajax({
+                                                url: 'index.php?route=checkout/cart/add',
+                                                type: 'post',
+                                                data: {
+                                                    quantity: quantity_t,
+                                                    option: opt,
+                                                    option_vx: option_vxchat,
+                                                    product_id:{{ product_id }} },
+                                                dataType: 'json',
+                                                success: function (json) {
+                                                    if (json['notification']) {
+                                                        parent.show_notification(json['notification']);
+                                                    } else {
+                                                        parent.$('#content').parent().before('<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> ' + json['success'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                                                    }
+
+                                                    parent.$('#cart-total').html(json['total']);
+                                                    parent.$('#cart-items,.cart-badge').html(json['items_count']);
+
+                                                    if (json['items_count']) {
+                                                        parent.$('#cart-items,.cart-badge').removeClass('count-zero');
+                                                    } else {
+                                                        parent.$('#cart-items,.cart-badge').addClass('count-zero');
+                                                    }
+
+                                                    if (Journal['scrollToTop']) {
+                                                        parent.$('html, body').animate({scrollTop: 0}, 'slow');
+                                                    }
+                                                    parent.$('.cart-content ul').load('index.php?route=common/cart/info ul li');
+                                                }
+                                            });
+                                        }
+                                    });
+                                </script>
+
+                                <style type="text/css">
+                                    @media screen and (max-width: 767px) {
+                                        .mobile-hidden {
+                                            display: none;
+                                        }
+                                    }
+                                </style>
+                            {% endif %}
+
+
+                        {% endfor %}
+
+                        <div class="qv-form-group">
+                            <label>{{ entry_qty }}</label>
+                            <div style="display:flex; gap:10px;">
+                                <input type="number"
+                                       name="quantity"
+                                       value="{{ minimum }}"
+                                       min="{{ minimum }}"
+                                       id="input-option-quantity"
+                                       class="qv-control"
+                                       style="width:80px; text-align:center;" />
+
+                                <button type="submit" class="btn-buy">
+                                    <i class="fa fa-shopping-cart"></i> {{ button_cart }}
+                                </button>
+                            </div>
+                            <div id="error-option-quantity" class="iwd-invalid-feedback"></div>
+
+                            <input type="hidden" name="product_id" value="{{ product_id }}"/>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div style="padding: 0 20px 20px;">
+                <ul class="nav nav-tabs iwd-tabs">
+                    <li><a href="#tabs-description" class="active">{{ tab_description }}</a></li>
+                    {% if attribute_groups %}
+                        <li><a href="#tabs-specification">{{ tab_attribute }}</a></li>
+                    {% endif %}
+                    {% if review_status %}
+                        <li><a href="#tabs-review">{{ tab_review }}</a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="tab-content" style="padding:10px;">
+                    <div id="tabs-description" class="iwd-tab-pane active">
+                        {{ description }}
+                    </div>
+
+                    {% if attribute_groups %}
+                        <div id="tabs-specification" class="iwd-tab-pane">
+                            <div class="table-responsive">
+                                <table class="iwd-table">
+                                    {% for attribute_group in attribute_groups %}
+                                        <thead>
+                                        <tr>
+                                            <td colspan="2"><strong>{{ attribute_group.name }}</strong></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for attribute in attribute_group.attribute %}
+                                            <tr>
+                                                <td>{{ attribute.name }}</td>
+                                                <td>{{ attribute.text }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if review_status %}
+                        <div id="tabs-review" class="iwd-tab-pane">{{ review }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+

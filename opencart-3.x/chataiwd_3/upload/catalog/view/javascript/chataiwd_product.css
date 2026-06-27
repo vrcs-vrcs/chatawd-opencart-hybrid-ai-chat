@@ -1,0 +1,534 @@
+/* chataiwd_product.css */
+.qv-container {
+    display: flex;
+    flex-direction: row; /* Egymás mellé teszi őket */
+    flex-wrap: wrap;     /* Ha nincs elég hely (mobil), egymás alá rakja */
+    gap: 30px;           /* Távolság az oszlopok között */
+    padding: 20px;
+}
+
+/* Bal oldal (Képek) - az ablak 45%-át foglalja el */
+.qv-left {
+    flex: 0 0 45%;
+    min-width: 300px; /* Megakadályozza, hogy túl kicsi legyen */
+}
+
+/* Jobb oldal (Infók) - a maradék helyet kitölti */
+.qv-right {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Kép megjelenítés fixálása */
+.image-container {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background: #fff;
+}
+
+#main-product-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Kisképek rácsa */
+.image-additional-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.thumb-swap {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.thumb-swap:hover {
+    border-color: #2f3eb1;
+}
+
+/* Szöveges részek stílusa */
+.qv-right h1 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #1a1a1a;
+}
+
+.price-section {
+    margin: 20px 0;
+}
+
+.price-new {
+    font-size: 28px;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #888;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+/* Form elemek */
+.qv-form-group {
+    margin-bottom: 20px;
+}
+
+.qv-form-group label {
+    display: block;
+    margin-bottom: 0;
+}
+
+.qv-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Kosár gomb egyedi stílusa */
+.btn-buy {
+    background-color: #2f3eb1;
+    color: white;
+    border: none;
+    padding: 0 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-buy:hover {
+    background-color: #1e2a8a;
+}
+
+/* Tabok stílusa (egyszerűen) */
+.nav-tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 10px;
+}
+
+.nav-tabs a {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #666;
+    display: block;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.nav-tabs a.active {
+    color: #2f3eb1;
+    border-bottom-color: #2f3eb1;
+    font-weight: bold;
+}
+
+/* Az opció sora */
+.iwd-option-row {
+    display: flex;
+    align-items: center; /* Függőlegesen középre igazítja a pöttyöt a szöveggel */
+    gap: 8px;            /* Távolság a pötty és a szöveg között */
+    margin-bottom: 8px;  /* Távolság az egyes sorok között */
+    cursor: pointer;
+}
+
+/* Maga a rádiógomb vagy checkbox */
+.iwd-option-input {
+    margin: 0;           /* Töröljük a böngésző alapértelmezett margóit */
+    cursor: pointer;
+    width: 16px;         /* Fix szélesség, hogy ne ugráljon */
+    height: 16px;
+}
+
+/* A felirat stílusa */
+.iwd-option-label-text {
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.2;
+    color: #333;
+    user-select: none;   /* Ne jelölje ki a szöveget dupla kattintáskor */
+}
+
+/* Kép az opcióban (ha van az OC-ben kép a rádiógomb mellett) */
+.iwd-option-row img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+#form-product-qv input[type=checkbox], input[type=radio] {
+    margin: 0;
+}
+#product-quickview {
+    overflow-y: auto;
+    padding: 10px;
+}
+#product-quickview .form-label {
+    margin-bottom: 10px;
+}
+
+/* Mobilos nézet finomhangolása */
+@media (max-width: 768px) {
+    .qv-left, .qv-right {
+        flex: 0 0 100%; /* Mobilon teljes szélesség */
+    }
+}
+
+
+
+/* A sötét háttér (lepedő) */
+.iwd-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9000; /* Magas, de a chat alatt maradjon, ha azt akarod */
+    display: none;
+}
+
+.iwd-modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2147483647;
+    overflow-y: auto;
+    /* Ez a trükk: egy teljesen átlátszó háttér, ami miatt "testet" kap az elem */
+    background: rgba(0,0,0,0);
+
+    display: none; /* A JS fadeIn/show fogja kezelni */
+    display: flex; /* Ezt a JS felülírja, de a flex elrendezés kell */
+    align-items: center;    /* Függőlegesen középre */
+    justify-content: center; /* Vízszintesen középre */
+
+    pointer-events: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Az ablak doboza */
+.iwd-modal-card {
+    pointer-events: auto; /* A kártyán belül viszont újra legyen kattintás */
+    position: relative;
+    background: #fff;
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+    border-radius: 4px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    animation: iwdSlideUp 0.3s ease-out;
+}
+
+#iwd-modal-content {
+    overflow-y: auto; /* A kártyán belüli görgetéshez, ha hosszú a leírás */
+    padding: 10px;
+}
+
+.loader-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+/* Bezáró gomb */
+.iwd-modal-close {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 35px;
+    font-weight: 300;
+    color: #666;
+    cursor: pointer;
+    line-height: 1;
+    z-index: 100;
+    transition: color 0.2s;
+}
+.iwd-modal-close:hover { color: #000; }
+
+/* Animáció az ablaknak */
+@keyframes iwdSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Megakadályozza a főoldal görgetését, ha nyitva a modal */
+body.iwd-modal-open {
+    overflow: hidden;
+}
+
+/* Betöltő stílusa */
+.iwd-loader {
+    padding: 80px 20px;
+    text-align: center;
+    color: #2f3eb1;
+}
+
+.iwd-product-layout {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 25px;
+    gap: 30px;
+}
+.iwd-column {
+    flex: 1;
+    min-width: 300px; /* Ha ennél szűkebb a hely, egymás alá ugranak (mobil) */
+}
+.iwd-main-img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+.iwd-thumb-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+.iwd-thumb-grid img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 1px solid #ddd;
+}
+/* Az iwd-specifikus hibaüzenet stílusa */
+.iwd-invalid-feedback {
+    display: none; /* Alapból rejtve */
+    width: 100%;
+    margin-top: 4px;
+    font-size: 11px;
+    color: #d9534f; /* Klasszikus hiba-piros */
+    font-weight: 500;
+}
+
+/* Ha az input hiba állapotba kerül */
+.iwd-control.iwd-is-invalid,
+.iwd-option-input.iwd-is-invalid {
+    border-color: #d9534f !important;
+}
+
+/* Egy kis extra: ha radio csoportban van hiba, a keret pirosítása helyett a szöveget is színezhetjük */
+.iwd-is-invalid + .iwd-option-label-text {
+    color: #d9534f;
+}
+/* Tab tartalom alaphelyzetben rejtve */
+.iwd-tab-pane {
+    display: none;
+    animation: iwdFadeIn 0.3s ease;
+}
+
+/* Aktív tab megjelenítése */
+.iwd-tab-pane.active {
+    display: block;
+}
+
+@keyframes iwdFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Táblázat stílusok (Bootstrap pótlás) */
+.iwd-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+.iwd-table td, .iwd-table th {
+    padding: 8px;
+    border: 1px solid #dee2e6;
+    font-size: 13px;
+}
+
+.thumb-swap {
+    transition: all 0.2s ease-in-out;
+    opacity: 0.8;
+}
+
+.thumb-swap:hover {
+    opacity: 1;
+    transform: scale(1.05); /* Enyhe nagyítás hoverre */
+    border-color: #2f3eb1;
+}
+
+.iwd-alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.iwd-alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.iwd-alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.iwd-btn-upload {
+    background: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.iwd-btn-upload:hover {
+    background: #e2e6ea;
+    border-color: #adb5bd;
+}
+
+.iwd-upload-info {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #28a745; /* Siker zöld */
+    display: none;
+}
+
+.iwd-upload-container {
+    margin-bottom: 15px;
+}
+/* Alap gomb stílus finomítás, hogy legyen átmenet */
+.btn-cart {
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Loading állapot: letiltott kurzor és halványítás */
+.btn-cart.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none; /* Ne lehessen többször rákattintani */
+}
+
+/* Forgó animáció az ikonnak, ha loading osztályt kap a gomb */
+.btn-cart.loading i {
+    animation: iwd-spin 1s infinite linear;
+}
+
+/* Egy kis pulzáló effekt a gombnak */
+.btn-cart.loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    animation: iwd-pulse 1.5s infinite ease-in-out;
+}
+
+/* Animációk definiálása */
+@keyframes iwd-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes iwd-pulse {
+    0% { opacity: 0.1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 0.1; }
+}
+
+/* Siker állapot (amikor a JS-ben hozzáadjuk a btn-success-t) */
+.btn-cart.btn-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+/* Bootstrap 5-szerű Select mező */
+.iwd-select {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #f8f9fa;
+    /* Egyedi BS5 stílusú SVG nyíl */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem; /* BS5 standard lekerekítés */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    appearance: none; /* Alapértelmezett nyíl eltávolítása */
+}
+
+/* Fókusz állapot (kék keret és árnyék) */
+.iwd-select:focus, .qv-form-group input[type=text]:focus, .qv-form-group textarea:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Letiltott állapot */
+.iwd-select:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+/* Hiba állapot (.iwd-is-invalid esetén) */
+.iwd-select.iwd-is-invalid {
+    border-color: #dc3545;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"),
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center, center right 2.25rem;
+    background-size: 16px 12px, calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.iwd-select.iwd-is-invalid:focus {
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.qv-form-group input[type=text], .qv-form-group textarea {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 0.375rem;
+}

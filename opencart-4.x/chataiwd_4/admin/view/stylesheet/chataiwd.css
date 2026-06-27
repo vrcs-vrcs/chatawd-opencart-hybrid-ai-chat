@@ -1,0 +1,177 @@
+#duration-modal div {
+    margin-bottom: 15px;
+}
+#duration-modal label {
+    display: block;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10010;
+}
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 8px;
+    text-align: center;
+}
+.close-modal {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+#filemanager .modal-content {
+    width: 100%;
+    max-width: none;
+}
+
+#registration-form div {
+    margin-bottom: 15px;
+}
+#registration-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#registration-form button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#registration-form button:hover {
+    background: #0056b3;
+}
+
+#credit-amount {
+    font-weight: bold;
+    font-size: 18px;
+}
+.vrcs-payment-desc {
+    border: 1px solid red;
+    background: aliceblue;
+    margin-top: 10px;
+}
+#content .fas.fa-info-circle {
+    font-size: 20px;
+}
+.arnyek {
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #f1f1f1;
+    opacity: 0.6;
+    z-index: 5;
+    pointer-events: all;
+    cursor: not-allowed;
+    position: absolute;
+}
+.d-arnyek {
+    display: block;
+}
+.text-start-icon, .text-start-image {
+    position: relative !important;
+}
+
+/* Az egész sor elhalványítása */
+.faq-disabled {
+    opacity: 0.5; /* Elhalványítjuk az egész sort */
+    background-color: #f8f9fa !important; /* Kap egy enyhe szürke hátteret */
+    transition: all 0.3s ease;
+}
+
+/* Letiltjuk az interakciót a kikapcsolt sor elemein (kivéve a státusz gombot) */
+.faq-disabled input:not(.form-check-input),
+.faq-disabled textarea,
+.faq-disabled select,
+.faq-disabled .btn:not(.btn-danger) {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.btn-dispatcher {
+    background-color: #8e44ad; /* Elegáns lila */
+    border-color: #8e44ad;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-dispatcher:hover, .btn-dispatcher:active, .btn-dispatcher:focus {
+    background-color: #9b59b6;
+    border-color: #9b59b6;
+    color: #fff;
+}
+
+@keyframes pulse-border {
+    0% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(142, 68, 173, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
+}
+
+.btn-dispatcher {
+    animation: pulse-border 2s infinite;
+}
+.text-start .input-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Kurzor mutatása az aktív gombokon */
+button:not(:disabled),
+[type="button"]:not(:disabled),
+[type="reset"]:not(:disabled),
+[type="submit"]:not(:disabled) {
+    cursor: pointer;
+}
+
+/* Bootstrap 3 kompatibilis .btn-outline-info stílus */
+.btn-outline-info {
+    color: #54b7d3;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid #54b7d3;
+    border-radius: 4px; /* OC3 lekerekítés */
+    padding: 6px 12px;
+    font-size: 14px;
+    transition: all 0.15s ease-in-out;
+}
+
+/* Rámutatás (Hover) és aktív állapotok */
+.btn-outline-info:hover,
+.btn-outline-info:focus,
+.btn-outline-info:active,
+.btn-outline-info.active {
+    color: #fff !important;
+    background-color: #54b7d3 !important;
+    border-color: #54b7d3 !important;
+    text-decoration: none;
+}
+
+/* Letiltott (Disabled) állapot kezelése */
+.btn-outline-info:disabled,
+.btn-outline-info.disabled {
+    color: #54b7d3;
+    background-color: transparent;
+    border-color: #54b7d3;
+    opacity: 0.65;
+    cursor: not-allowed;
+}

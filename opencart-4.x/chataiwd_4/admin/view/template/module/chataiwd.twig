@@ -1,0 +1,712 @@
+{{ header }}{{ column_left }}
+
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="float-end">
+                <button type="submit" form="form-ai" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fas fa-solid fa-save"></i></button>
+                <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fas fa-solid fa-reply"></i></a>
+            </div>
+            <h1>{{ heading_title }}</h1>
+            <ol class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible">
+                <i class="fa-solid fa-circle-exclamation"></i> {{ error_warning }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+        {% if success %}
+            <div class="alert alert-success alert-dismissible">
+                <i class="fa-solid fa-check-circle"></i> {{ success }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+        <div class="card">
+            <div class="card-header"><i class="fas fa-solid fa-robot"></i> {{ text_edit }}</div>
+            <div class="card-body">
+
+                {% if module_chataiwd_registration_id and human and domain %}
+                    <form action="{{ human }}" id="human-ai" method="post" target="_blank">
+                        <input type="hidden" name="registration_id" value="{{ module_chataiwd_registration_id }}">
+                        <input type="hidden" name="domain" value="{{ domain }}">
+                        <input type="hidden" name="coupons" value='{{ coupons_json }}'>
+                        <input type="hidden" name="language_code" value="{{ config_language }}">
+                        <input type="hidden" name="vrcs_version" value="{{ vrcs_version }}">
+                        <input type="hidden" name="rewards" id="vrcs-reward-presets" value="{{ module_chataiwd_rewards }}">
+                        <input type="hidden" name="dispatcher_id" value="{{ dispatcher_id }}">
+                        <input type="hidden" name="dispatcher_name" value="{{ dispatcher_name }}">
+
+                        <div class="row mb-3" style="margin: 41px 0px !important;">
+                            <label class="col-sm-2 col-form-label">
+                                {{ entry_dispatcher }}
+                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_dispatcher }}"></i>
+                            </label>
+                            <div class="col-sm-10">
+                                <button type="button" class="btn btn-dispatcher mt-2" id="dispatcher-button">
+                                    <i class="fas fa-solid fa-user-plus"></i> {{ button_dispatcher }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
+
+                <form action="{{ save }}" id="form-ai" method="post" data-oc-toggle="ajax">
+
+                    <div id="vrcs-sync-container" style="display: none; margin-top: 20px;">
+                        <fieldset>
+                            <legend><i class="fas fa-brain" style="color: #00a8c6;"></i> {{ text_ai_learning|default('Az AI asszisztens felkészítése...') }}</legend>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p style="font-size: 13px; color: #555;">
+                                        {{ text_ai_learning_help|default('Please do not close the window. <br>The AI id currently analyzing and indexing the web store is offerings so that the chat module and intelligent dispatcher search engine can provide precise answers and product recommendations.') }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 15px;">
+                                <div class="col-sm-12">
+                                    <div id="sync-table-list" style="max-height: 300px; font-size: 12px; color: #777;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col-sm-12">
+                                    <div id="vrcs-slider" style="background: rgba(172, 171, 180, 0.2); height: 15px; width: 100%; border-radius: 4px;"></div>
+                                    <div id="sync-status-text" style="margin-top: 5px; font-weight: bold; color: #00a8c6;"></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div id="vrcs-normal-settings">
+                        {# Tab Navigáció #}
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item"><a href="#tab-general" data-bs-toggle="tab" class="nav-link active"><i class="fas fa-cog"></i> {{ tab_general|default('General') }}</a></li>
+                            <li class="nav-item"><a href="#tab-chat" data-bs-toggle="tab" class="nav-link"><i class="fas fa-comment-dots"></i> {{ tab_chat_settings|default('Chat Settings') }}</a></li>
+                            <li class="nav-item"><a href="#tab-faq" data-bs-toggle="tab" class="nav-link"><i class="fas fa-question-circle"></i> {{ tab_faq|default('FAQ') }}</a></li>
+                            <li class="nav-item"><a href="#tab-tools" data-bs-toggle="tab" class="nav-link"><i class="fas fa-tools"></i> {{ tab_tools|default('Features') }}</a></li>
+                            <li class="nav-item"><a href="#tab-recovery" data-bs-toggle="tab" class="nav-link"><i class="fas fa-cart-shopping"></i> {{ tab_abandoned|default('Abandoned cart') }}</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            {# --- 1. TAB: GENERAL --- #}
+                            <div id="tab-general" class="tab-pane active">
+
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">{{ entry_status }}</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="module_chataiwd_status" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_status" value="1" id="input-status" class="form-check-input"{% if module_chataiwd_status %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if module_chataiwd_registration_id %}
+                                    <div class="row mb-3">
+                                        <label class="col-sm-2 col-form-label">{{ text_ai_syncr|default('AI Synchronization') }}</label>
+                                        <div class="col-sm-10">
+                                            <button type="button" id="vrcs-force-sync-btn" class="btn btn-outline-info" onclick="triggerManualSync()">
+                                                <i class="fas fa-sync-alt"></i> {{ text_syncrestart }}
+                                            </button>
+                                            <div class="form-text mt-2">{{ text_syncrestart_click }}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+
+                                {% if not module_chataiwd_registration_id %}
+                                    <div class="row mb-3">
+                                        <label class="col-sm-2 col-form-label">
+                                            {{ entry_registration_id }}
+                                            <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_registration_id }}"></i>
+                                        </label>
+                                        <div class="col-sm-10">
+                                            <button type="button" onclick="openRegistrationModal()" class="btn btn-primary mt-2">
+                                                <i class="fas fa-solid fa-user-plus"></i> {{ button_register }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if module_chataiwd_registration_id %}
+                                    <div style="display:none;">
+                                        <div class="row mb-3">
+                                            <label class="col-sm-2 col-form-label">
+                                                {{ entry_select_pack }}
+                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_select_pack }}"></i>
+                                            </label>
+                                            <div class="col-sm-10">
+                                                <select id="package-select" name="module_chataiwd_package" class="form-control">
+                                                    {% for key, package in packages %}
+                                                        <option value="{{ key }}" >{{ package }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        {% if expiration_warning.days != -2 %}
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">
+                                                    {{ entry_expiration_status }}
+                                                </label>
+                                                <div class="col-sm-10">
+                                                    <button type="button" id="renew-subscription" class="btn btn-warning">
+                                                        {{ expiration_warning.message }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-2 col-form-label">
+                                                {{ entry_select_pack_help }}
+                                            </label>
+
+                                            <div class="col-sm-10 position-relative">
+                                                <div class="content-close-package-guide">
+                                                    {{ package_help }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if module_chataiwd_registration_id %}
+                                <div class="row mb-3 vrcs-payment">
+                                    <label class="col-sm-2 col-form-label">{{ text_chataiwd_kredit }}</label>
+                                    <div class="col-sm-3">
+                                        <button type="button" id="vrcs-payment-button" class="btn btn-success">
+                                            <i class="fas fa-solid fa-credit-card"></i> {{ button_fizetes }}
+                                        </button>
+                                        <span>10 USD</span>
+                                    </div>
+                                    <div class="col-sm-3 credit-balance">
+                                        {{ text_kredit_egyenleg }} <span id="credit-amount">{{ kredit}} USD</span>
+                                    </div>
+
+                                    <div class="col-sm-4 credit-balance">
+                                        {% if credit_monitoring is not null %}
+                                            {{ text_billing }}
+                                            <div class="form-check form-switch form-switch-lg">
+                                                <input type="hidden" name="module_chataiwd_billing" value="0"/>
+                                                <input type="checkbox" name="module_chataiwd_billing" value="1" id="input-billing" class="form-check-input"{% if credit_monitoring %} checked{% endif %}/>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <label class="col-sm-2 col-form-label"></label>
+                                    <div class="col-sm-10 vrcs-payment-desc">{{ help_kredit_vrcs }}</div>
+                                </div>
+
+                                <div id="payment-modal" class="modal" style="display:none;">
+                                    <div class="modal-content">
+                                        <span class="close-modal" onclick="closePaymentModal()">×</span>
+                                        <h2>{{ button_fizetes }}</h2>
+                                        <div class="mb-3">
+                                            <button type="button" class="btn btn-primary" id="payment_kredit">10 USD</button>
+                                        </div>
+                                        <p id="payment-message"></p>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+
+                            </div>
+
+
+                            <div id="tab-chat" class="tab-pane">
+                                {# Globális beállítások, amik nem nyelvfüggőek #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">
+                                        {{ entry_prompt }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_prompt }}"></i>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <textarea name="module_chataiwd_prompt" class="form-control" placeholder="{{ help_placeholder }}">{{ module_chataiwd_prompt }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">
+                                        {{ entry_color }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_color }}"></i>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="color" name="module_chataiwd_color" value="{{ module_chataiwd_color }}" class="form-control" style="width: 100px;">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">
+                                        {{ entry_reward_presets }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ text_reward_help }}"></i>
+
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="module_chataiwd_rewards" value="{{ module_chataiwd_rewards }}" placeholder="50,100,250,500" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                {# Nyelvi fülek navigációja #}
+                                <ul class="nav nav-tabs" id="language">
+                                    {% for language in languages %}
+                                        <li class="nav-item">
+                                            <a href="#language-{{ language.language_id }}" data-bs-toggle="tab" class="nav-link{% if loop.first %} active{% endif %}">
+                                                <img src="{{ language.image }}" title="{{ language.name }}"/> {{ language.name }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+
+                                <div class="tab-content">
+                                    {% for language in languages %}
+                                        <div id="language-{{ language.language_id }}" class="tab-pane{% if loop.first %} active{% endif %}">
+                                            <br>
+                                            {# Chat Gomb Szövege #}
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">{{ entry_chat_button }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="chat_setting_description[{{ language.language_id }}][module_chat_button]" value="{{ module_chat_button[language.language_id] }}" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                            {# Welcome Message (A buborék szövege) #}
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">{{ entry_welcome_message }}</label>
+                                                <div class="col-sm-10">
+                                                    <textarea name="chat_setting_description[{{ language.language_id }}][module_welcome_message]" class="form-control" rows="2">{{ module_welcome_message[language.language_id] }}</textarea>
+                                                </div>
+                                            </div>
+
+                                            {# AI Fejléc #}
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">{{ entry_ai_response_header }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="chat_setting_description[{{ language.language_id }}][module_ai_response_header]" value="{{ module_ai_response_header[language.language_id] }}" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                            {# Diszpécser Fejléc #}
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">{{ entry_dispatcher_response_header }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="chat_setting_description[{{ language.language_id }}][module_dispatcher_response_header]" value="{{ module_dispatcher_response_header[language.language_id] }}" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">{{ entry_ai_response_indicator }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="chat_setting_description[{{ language.language_id }}][module_ai_response_indicator]" value="{{ module_ai_response_indicator[language.language_id] }}" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">{{ entry_dispatcher_response_indicator }}</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="chat_setting_description[{{ language.language_id }}][module_dispatcher_response_indicator]" value="{{ module_dispatcher_response_indicator[language.language_id] }}" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div id="tab-faq" class="tab-pane">
+                                <br>
+                                <div class="table-responsive">
+                                    <table id="faq-table" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <td class="text-start" style="width: 20%;">{{ entry_faq_icon_type|default('Icon type') }}</td>
+                                            <td class="text-start" style="width: 15%;">{{ entry_faq_visual_icon|default('Icon') }}</td>
+                                            <td class="text-start" style="width: 15%;">{{ entry_faq_visual_image|default('Image') }}</td>
+                                            <td class="text-start" style="width: 25%;">{{ entry_faq_question|default('Question') }}</td>
+                                            <td class="text-start" style="width: 30%;">{{ entry_faq_answer|default('Answer') }}</td>
+                                            <td class="text-center" style="width: 5%;">{{ entry_status|default('Status') }}</td>
+                                            <td class="text-end" style="width: 5%;"></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% set faq_row = 0 %}
+                                        {% for faq in module_chataiwd_faqs %}
+                                            <tr id="faq-row-{{ faq_row }}" class="{% if not faq.status %}faq-disabled{% endif %}">
+                                                {# Választó: Kép vagy Ikon #}
+                                                <td class="text-start">
+                                                    <select name="module_chataiwd_faq[{{ faq_row }}][type]" class="form-select" onchange="toggleFaqType('{{ faq_row }}', this.value);">
+                                                        <option value="icon" {% if faq.type == 'icon' %}selected{% endif %}>{{ entry_faq_visual_icon|default('Icon') }} (FontAwesome)</option>
+                                                        <option value="image" {% if faq.type == 'image' %}selected{% endif %}>{{ entry_faq_visual_image|default('Image') }}</option>
+                                                    </select>
+                                                </td>
+
+                                                {# Ikon bevitel #}
+                                                <td class="text-start text-start-icon" style="vertical-align: middle; position: relative">
+                                                    <div class="input-group" style="text-align: center">
+                                                        <span class="input-group-text"><i class="{{ faq.icon|default('fa-solid fa-icons') }}"></i></span>
+                                                        <input type="text" name="module_chataiwd_faq[{{ faq_row }}][icon]" value="{{ faq.icon }}" placeholder="fa-solid fa-truck" class="form-control"/>
+                                                    </div>
+                                                    <div class="arnyek {% if faq.type == 'image' %}d-arnyek{% endif %}"></div>
+                                                </td>
+
+                                                {# Képkezelő (OpenCart standard) #}
+                                                <td class="text-start text-start-image" style="position: relative">
+                                                    <div class="image-input">
+                                                        <div class="card image" style="width: 100px;">
+                                                            <img src="{{ faq.thumb }}" alt="" title="" id="thumb-image-{{ faq_row }}" data-oc-placeholder="{{ placeholder }}" class="card-img-top"/>
+                                                            <input type="hidden" name="module_chataiwd_faq[{{ faq_row }}][image]" value="{{ faq.image }}" id="input-image-{{ faq_row }}"/>
+                                                            <div class="card-body p-1 text-center">
+                                                                <button type="button" data-oc-toggle="image" data-oc-target="#input-image-{{ faq_row }}" data-oc-thumb="#thumb-image-{{ faq_row }}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pencil"></i></button>
+                                                                <button type="button" data-oc-toggle="clear" data-oc-target="#input-image-{{ faq_row }}" data-oc-thumb="#thumb-image-{{ faq_row }}" class="btn btn-warning btn-sm"><i class="fa-regular fa-trash-can"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="arnyek {% if faq.type == 'icon' or not faq.type %}d-arnyek{% endif %}"></div>
+                                                </td>
+
+                                                {# Kérdés #}
+                                                <td class="text-start">
+                                                    <input type="text" name="module_chataiwd_faq[{{ faq_row }}][question]" value="{{ faq.question }}" placeholder="{{ entry_faq_question }}" class="form-control"/>
+                                                </td>
+
+                                                {# Válasz #}
+                                                <td class="text-start">
+                                                    <textarea name="module_chataiwd_faq[{{ faq_row }}][answer]" rows="3" placeholder="{{ entry_faq_answer }}" class="form-control">{{ faq.answer }}</textarea>
+                                                </td>
+
+                                                {# Státusz #}
+                                                <td class="text-center">
+                                                    <div class="form-check form-switch d-inline-block">
+                                                        <input type="hidden" name="module_chataiwd_faq[{{ faq_row }}][status]" value="0"/>
+                                                        <input type="checkbox" name="module_chataiwd_faq[{{ faq_row }}][status]" value="1" class="form-check-input" onchange="toggleFaqStatus({{ faq_row }}, this.checked);" {% if faq.status %}checked{% endif %}/>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-end">
+                                                    <button type="button" onclick="$('#faq-row-{{ faq_row }}').remove();" data-bs-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger">
+                                                        <i class="fa-solid fa-minus-circle"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% set faq_row = faq_row + 1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td colspan="5"></td>
+                                            <td class="text-end">
+                                                <button type="button" onclick="addFaqRow();" data-bs-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary">
+                                                    <i class="fa-solid fa-plus-circle"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <div id="tab-tools" class="tab-pane">
+                                <br>
+                                <div class="alert alert-info"><i class="fas fa-info-circle"></i> {{ help_tools_info|default('Here you can turn on or off the extra features that appear in the chat window..') }}</div>
+
+                                {# 1. Diszpécser hívás (Bell) #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">
+                                        {{ entry_tool_bell|default('Call Dispatcher (Bell)') }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_tool_bell|default('Allows users to notify the dispatcher.') }}"></i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="module_chataiwd_tool_bell" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_tool_bell" value="1" class="form-check-input"{% if module_chataiwd_tool_bell %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# 2. Mikrofon / Voice #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">
+                                        {{ entry_tool_voice|default('Voice Recognition') }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_tool_voice|default('Show microphone icon for voice input.') }}"></i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="module_chataiwd_tool_voice" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_tool_voice" value="1" class="form-check-input"{% if module_chataiwd_tool_voice %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# 3. Képfeltöltés #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">
+                                        {{ entry_tool_image|default('Image Upload') }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_tool_image|default('Allows users to send images to the AI ​​or dispatcher.') }}"></i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="module_chataiwd_tool_image" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_tool_image" value="1" class="form-check-input"{% if module_chataiwd_tool_image %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# 4. Emoji #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">
+                                        {{ entry_tool_emoji|default('Emoji Picker') }}
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="module_chataiwd_tool_emoji" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_tool_emoji" value="1" class="form-check-input"{% if module_chataiwd_tool_emoji %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# 5. Email küldés (Levél ikon) #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">
+                                        {{ entry_tool_email|default('Email Contact Form') }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_tool_email|default('Displays the mail icon for direct contact.') }}"></i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="module_chataiwd_tool_email" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_tool_email" value="1" class="form-check-input"{% if module_chataiwd_tool_email %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# 6. FAQ Globális kapcsoló #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">
+                                        {{ entry_tool_faq|default('FAQ Module') }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_tool_faq|default('Turns the display of FAQs completely off or on.') }}"></i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="module_chataiwd_tool_faq" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_tool_faq" value="1" class="form-check-input"{% if module_chataiwd_tool_faq %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# 7. WhatsApp Kapcsolat #}
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">
+                                        {{ entry_tool_whatsapp|default('WhatsApp Contact') }}
+                                        <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ help_tool_whatsapp|default('Show WhatsApp direct message button.') }}"></i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check form-switch form-switch-lg mb-2">
+                                            <input type="hidden" name="module_chataiwd_tool_whatsapp" value="0"/>
+                                            <input type="checkbox" name="module_chataiwd_tool_whatsapp" value="1" class="form-check-input"{% if module_chataiwd_tool_whatsapp %} checked{% endif %}
+
+                                                   onchange="
+                                                       const isChecked = this.checked;
+                                                       const $input = jQuery('#input-whatsapp-number');
+                                                       const $container = jQuery('#whatsapp-config-container');
+
+                                                       $input.prop('disabled', !isChecked);
+                                                       $input.prop('readonly', !isChecked); // Ha nincs bepipálva, legyen readonly
+                                                       $container.css('opacity', isChecked ? '1' : '0.5');
+                                                   "/>
+
+
+                                        </div>
+
+                                        <div id="whatsapp-config-container" style="transition: opacity 0.3s; {% if not module_chataiwd_tool_whatsapp %}opacity: 0.5;{% endif %}">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
+                                                <input type="text"
+                                                       name="module_chataiwd_whatsapp_number"
+                                                       value="{{ module_chataiwd_whatsapp_number }}"
+                                                       placeholder="{{ entry_whatsapp_placeholder|default('+36 70 123 4567') }}"
+                                                       id="input-whatsapp-number"
+                                                       class="form-control"
+                                                       {% if not module_chataiwd_tool_whatsapp %}disabled{% endif %}/>
+                                            </div>
+                                            <small class="form-text text-muted">{{ help_whatsapp_number|default('Enter the phone number in international format.') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="tab-pane" id="tab-recovery">
+                                <br>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> {{ help_recovery_info|default('Set up a maximum of 5 reminder emails. Empty rows will not be sent.') }}
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table id="recovery-table" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <td class="text-center" style="width: 50px;">#</td>
+                                            <td class="text-start" style="width: 250px;">{{ entry_recovery_delay|default('Delay') }}</td>
+                                            <td class="text-start">{{ entry_recovery_subject|default('Email subject (Empty = not sent)') }}</td>
+                                            <td class="text-start">{{ entry_recovery_content|default('Message content') }}</td>
+                                            <td class="text-center" style="width: 100px;">{{ entry_status }}</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for i in 0..4 %}
+                                            <tr>
+                                                <td class="text-center" style="vertical-align: middle;"><strong>{{ i + 1 }}.</strong></td>
+                                                <td class="text-start">
+                                                    <div class="input-group">
+                                                        <input type="number" name="module_chataiwd_recovery[{{ i }}][value]" value="{{ module_chataiwd_recovery[i].value }}" class="form-control" min="1" placeholder="{{ text_time|default('Time...') }}" />
+                                                        <select name="module_chataiwd_recovery[{{ i }}][unit]" class="form-select" style="max-width: 100px;">
+                                                            <option value="hours" {% if module_chataiwd_recovery[i].unit == 'hours' %}selected{% endif %}>{{ text_hours|default('Hour') }}</option>
+                                                            <option value="days" {% if module_chataiwd_recovery[i].unit == 'days' %}selected{% endif %}>{{ text_days|default('Day') }}</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td class="text-start">
+                                                    <input type="text" name="module_chataiwd_recovery[{{ i }}][subject]" value="{{ module_chataiwd_recovery[i].subject }}"
+                                                           class="form-control" placeholder="{{ text_subject|default('E.g.: Did you forget something?') }}" />
+                                                </td>
+                                                <td class="text-start">
+                                                    <textarea name="module_chataiwd_recovery[{{ i }}][content]"
+                                                              class="form-control" rows="2" placeholder="{{ text_content_placeholder|default('Message...') }}" style="font-size: 0.9rem;">{{ module_chataiwd_recovery[i].content }}</textarea>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <div class="form-check form-switch d-inline-block">
+                                                        <input type="hidden" name="module_chataiwd_recovery[{{ i }}][status]" value="0"/>
+                                                        <input type="checkbox" name="module_chataiwd_recovery[{{ i }}][status]" value="1" class="form-check-input" {% if module_chataiwd_recovery[i].status %}checked{% endif %}/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Message popup modal -->
+    {% if message is defined and message is not empty %}
+        <div id="message-modal" class="modal" style="display: block;">
+            <div class="modal-content" style="position: fixed; top: 15%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; width: 80%; max-width: 400px; text-align: center; z-index: 1002;">
+                <span class="close-modal" onclick="$('#message-modal').remove();">×</span>
+                <p>{{ message|raw }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Regisztrációs modal -->
+    <div id="registration-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeRegistrationModal()">×</span>
+            <h2>Registration</h2>
+            <form id="registration-form">
+                <div>
+                    <label for="user-email">Email address *</label>
+                    <input type="email" id="user-email" name="user-email" required placeholder="Email address">
+                </div>
+                <button type="button" class="btn btn-primary">{{ text_registration|default('Registration') }}</button>
+            </form>
+            <p id="registration-message"></p>
+        </div>
+    </div>
+
+    <!-- Duration modal -->
+    <div id="duration-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDurationModal()">×</span>
+            <label class="col-form-label">{{ entry_duration }}</label>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <input type="radio" name="duration" id="duration-3" value="3" class="form-check-input">
+                    <label for="duration-3" class="form-check-label">{{ text_duration_3 }}</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" name="duration" id="duration-6" value="6" class="form-check-input">
+                    <label for="duration-6" class="form-check-label">{{ text_duration_6 }}</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" name="duration" id="duration-9" value="9" class="form-check-input">
+                    <label for="duration-9" class="form-check-label">{{ text_duration_9 }}</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" name="duration" id="duration-12" value="12" class="form-check-input">
+                    <label for="duration-12" class="form-check-label">{{ text_duration_12 }}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        // --- GLOBÁLIS KONFIGURÁCIÓS ÉS ADAT VÁLTOZÓK ---
+        const registrationId = '{{ module_chataiwd_registration_id|escape('js') }}';
+        const packagesUrl = {{ packages_url|json_encode|raw }};
+        const packages = {{ packages|json_encode|raw }};
+        let faq_row = {{ faq_row }};
+
+        // --- NYELVI ÉS URL REGISZTER (CFG) ---
+        window.config = {
+            // AJAX URL-ek
+            'checkout_credit': '{{ checkout_credit|escape('js') }}',
+            'billing_url': '{{ billing_url|escape('js') }}',
+            'register_url': '{{ register_url|escape('js') }}',
+            'save_url': '{{ save_url|escape('js') }}',
+            'local_stats_url': '{{ local_stats_url|escape('js') }}',
+            'push_chunk_url': '{{ push_chunk_url|escape('js') }}',
+            'finalize_sync_url': '{{ finalize_sync_url|escape('js') }}',
+
+            // Nyelvi bejegyzések és hibaüzenetek
+            'placeholder' : '{{ placeholder|escape('js') }}',
+
+            'text_error': '{{ text_error|default('Error:')|escape('js') }}',
+            'text_unknown_error': '{{ text_unknown_error|default('Unknown error')|escape('js') }}',
+            'text_error_server': '{{ text_error_server|default('An error occurred while communicating with the server. Please try again later.')|escape('js') }}',
+            'error_invalid_input': '{{ error_invalid_input|default('Please enter your email address!')|escape('js') }}',
+            'text_be_patient_registration': '{{ text_be_patient_registration|default('Please be patient, registration is in progress...')|escape('js') }}',
+            'text_failed': '{{ text_failed|default('Failed')|escape('js') }}',
+            'error_save': '{{ error_save|default('Error during saving:')|escape('js') }}',
+            'text_confirm_package_switch': '{{ text_confirm_package_switch|escape('js') }}',
+            'entry_faq_visual_icon': '{{ entry_faq_visual_icon|default('Icon')|escape('js') }}',
+            'entry_faq_visual_image': '{{ entry_faq_visual_image|default('Image')|escape('js') }}',
+            'text_restart_sync': '{{ text_restart_sync|default('Are you sure you want to restart the full AI sync? This may take a while.')|escape('js') }}',
+            'text_intitializing': '{{ text_intitializing|default('Initializing AI module...')|escape('js') }}',
+            'error_schema': '{{ error_schema|default('Error: The schema was not received properly.')|escape('js') }}',
+            'error_initializing_ai': '{{ error_initializing_ai|default('Error during AI initialization:')|escape('js') }}',
+            'text_ai_prepared': '{{ text_ai_prepared|default('AI successfully prepared! Starting system...')|escape('js') }}',
+            'text_empty': '{{ text_empty|default('empty')|escape('js') }}',
+            'text_ai_learning': '{{ text_ai_learning|default('AI learning process:')|escape('js') }}',
+            'text_optimizing': '{{ text_optimizing|default('Optimizing and training AI models... Please wait.')|escape('js') }}',
+            'error_closing': '{{ error_closing|default('Error during closing:')|escape('js') }}',
+            'error_ai_arming': '{{ error_ai_arming|default('error_ai_arming')|escape('js') }}',
+            'error_network': '{{ error_network|default('Network error during shutdown. Retrying in 5 seconds...')|escape('js') }}'
+        };
+    </script>
+    <script type="text/javascript" src="../extension/chataiwd/admin/view/javascript/chataiwd.js"></script>
+
+
+{{ footer }}
