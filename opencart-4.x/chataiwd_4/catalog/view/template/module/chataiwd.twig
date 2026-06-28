@@ -369,6 +369,9 @@
                         <button type="button" id="btn-voice-trigger" class="action-btn voice-btn" title="{{ text_voice }}">
                             <i class="fa-solid fa-microphone"></i>
                         </button>
+                        <button type="button" id="btn-record-trigger" class="action-btn record-btn" title="{{ text_record_voice|default('Send voice message') }}">
+                            <i class="fa-solid fa-microphone-lines"></i>
+                        </button>
                     {% endif %}
 
                     {% if tool_email %}

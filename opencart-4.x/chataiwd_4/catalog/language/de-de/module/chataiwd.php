@@ -192,3 +192,5 @@ $_['text_dispatcher_response_header_fallback']  = 'Disponent antwortet';
 $_['text_ai_response_indicator_fallback']       = 'KI antwortet';
 $_['text_dispatcher_response_indicator_fallback'] = 'Disponent antwortet';
 $_['text_welcome_message_fallback']             = 'Hallo! Wie kann ich Ihnen heute helfen?';
+$_['text_enable_microphone']             = 'Bitte erlauben Sie den Zugriff auf das Mikrofon!';
+$_['place_hang_rogzitese']               = '🎙️ Sprachaufnahme... Klicken Sie auf die Schaltfläche zum Senden!';

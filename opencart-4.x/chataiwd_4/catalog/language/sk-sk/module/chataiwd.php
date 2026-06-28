@@ -195,3 +195,5 @@ $_['text_dispatcher_response_header_fallback']    = 'Dispečer odpovedá';
 $_['text_ai_response_indicator_fallback']         = 'Odpoveď AI';
 $_['text_dispatcher_response_indicator_fallback'] = 'Dispečer odpovedá';
 $_['text_welcome_message_fallback']               = 'Ahoj! Ako vám môžem dnes pomôcť?';
+$_['text_enable_microphone']             = 'Prosím, povoľte prístup k mikrofónu!';
+$_['place_hang_rogzitese']               = '🎙️ Nahrávanie hlasu... Kliknite na tlačidlo pre odoslanie!';

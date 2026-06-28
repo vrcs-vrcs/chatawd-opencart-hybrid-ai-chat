@@ -206,3 +206,6 @@ $_['text_dispatcher_response_header_fallback']  = 'Diszpécser válaszol';
 $_['text_ai_response_indicator_fallback']       = 'MI válaszol';
 $_['text_dispatcher_response_indicator_fallback'] = 'Diszpécser válaszol';
 $_['text_welcome_message_fallback']             = 'Szia! Miben segíthetek neked ma?';
+
+$_['text_enable_microphone']             = 'Kérjük, engedélyezze a mikrofon használatát!';
+$_['place_hang_rogzitese']             = '🎙️ Hang rögzítése... Kattints a gombra a küldéshez!';

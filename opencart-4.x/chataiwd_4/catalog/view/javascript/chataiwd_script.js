@@ -291,7 +291,31 @@
 
             // Kép/Csatolmány blokk
             if (entry.attachment_filename) {
-                if (entry.attachment_thumb) {
+
+                const isAudio = entry.attachment_filename.match(/\.(webm|ogg|wav|mp3|m4a|mp4)$/i);
+
+                if (isAudio) {
+                    // 1. Kinyerjük a tiszta relatív utat az abszolútból (C:/wamp... -> temp_attachments/...)
+                    const rawPath = entry.attachment_thumb;
+
+                    // 2. Eldöntjük, ki küldte (user vagy bot) a responder_type alapján
+                    const isUser = (!entry.responder_type || parseInt(entry.responder_type) === 0);
+                    const bubbleClass = isUser ? 'chataiwd-message user' : 'chataiwd-message bot';
+
+                    // 3. Kirajzoljuk a lejátszót a megfelelő oldali buborékba
+                    tempHtml += `<div class="${bubbleClass}" data-message-id="${entry.id}">`;
+                    tempHtml += '<div class="message-content">';
+                    tempHtml += '<div class="audio-attachment-container" style="margin-top: 5px; margin-bottom: 5px;">';
+                    tempHtml += `<audio controls src="${cfg.download_url}&path=${rawPath}" style="max-width: 100%; height: 40px; display: block; outline: none;"></audio>`;
+                    tempHtml += '</div>';
+                    tempHtml += '<div class="download-link-container" style="font-size: 11px; margin-top: 5px; text-align: left;">';
+                    tempHtml += `<a href="${cfg.download_url}&path=${rawPath}" target="_blank" download="${entry.attachment_filename}" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; color: inherit;">`;
+                    tempHtml += `<i class="fa fa-download"></i> ${entry.attachment_filename}`;
+                    tempHtml += '</a>';
+                    tempHtml += '</div>';
+                    tempHtml += '</div></div>';
+
+                } else if (entry.attachment_thumb) {
                     tempHtml += '<div class="chataiwd-message image">';
                     tempHtml += '<div class="thumbnail_image"><img src="' + entry.attachment_thumb + '" class="thumbnail"></div>';
                     tempHtml += '<div class="message-content">' + entry.attachment_filename + '</div></div>';
@@ -1129,9 +1153,33 @@
 
                             // 2. KÉP/CSATOLMÁNY kiírása (a meglévő displayImage függvénnyel)
                             if (response.attachment_thumb && response.attachment_thumb.trim() !== '') {
-                                // Itt a meglévő displayImage-et hívjuk, ami magától appendel
                                 const fileName = response.attachment_filename || 'Attachment';
-                                displayImage(fileName, response.attachment_thumb);
+
+                                const isAudio = fileName.match(/\.(webm|ogg|wav|mp3|m4a|mp4)$/i);
+                                if (isAudio) {
+                                    const isUser = (!response.answer || response.answer.trim() === '');
+                                    const bubbleClass = isUser ? 'chataiwd-message user' : 'chataiwd-message bot';
+
+                                    // Létrehozzuk a hangfájl lejátszós buborékját a chathistory-ban
+                                    const audioHtml = `
+                                        <div class="${bubbleClass}" data-message-id="${response.message_id}">
+                                            <div class="message-content">
+                                                <div class="audio-attachment-container" style="margin-top: 5px; margin-bottom: 5px;">
+                                                    <audio controls src="${cfg.download_url}&path=${response.attachment_thumb}" style="max-width: 100%; height: 40px; display: block; outline: none;"></audio>
+                                                </div>
+                                                <div class="download-link-container" style="font-size: 11px; margin-top: 5px; text-align: left;">
+                                                    <a href="${cfg.download_url}&path=${response.attachment_thumb}" target="_blank" download="${fileName}" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; color: inherit;">
+                                                        <i class="fa fa-download"></i> ${fileName}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>`;
+
+                                    chatBody.append(audioHtml);
+
+                                } else {
+                                    displayImage(fileName, response.attachment_thumb);
+                                }
                             }
 
                             // 1. KÉRDÉS kiírása (azonnal)
@@ -1909,16 +1957,15 @@
     });
 
 
-    // Ellenőrizzük, támogatja-e a böngésző
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let isListening = false;
     let recognition;
 
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
-        recognition.lang = 'hu-HU'; // Magyar nyelv beállítása
-        recognition.continuous = false; // Megáll, ha befejezted a beszédet
-        recognition.interimResults = false; // Csak a végleges szöveget kérjük
+        recognition.lang = cfg.language_code || 'en-US';
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
 
         $('#btn-voice-trigger').on('click', function() {
@@ -1933,14 +1980,14 @@
         // Amikor elkezdi hallani
         recognition.onstart = function() {
             isListening = true;
-            $('#btn-voice-trigger').addClass('text-danger pulse-ai'); // Piros szín + pulzálás jelzi a felvételt
+            $('#btn-voice-trigger').addClass('text-danger pulse-ai');
             $('#voice-loader').css('display', 'flex'); // MEGJELENÍTÉS
         };
 
         // Amikor sikeres a felismerés
         recognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
-            const $input = $('#chataiwd-input'); // jQuery objektumként egyszerűbb a trigger
+            const $input = $('#chataiwd-input');
 
             // 1. Szöveg behelyezése
             const currentValue = $input.val();
@@ -1950,23 +1997,17 @@
                 $input.val(transcript);
             }
 
-            // 2. Események manuális kiváltása
-            // Az 'input' eseményt figyelik leggyakrabban a modern UI-ok (pl. gomb megjelenítéshez)
-            // A 'change' pedig a biztos, ami biztos
             $input.trigger('input').trigger('change');
 
-            // 3. Automatikus magasság állítás (ha van ilyen funkciód)
             $input.css('height', 'auto').css('height', $input[0].scrollHeight + 'px');
         };
 
-        // Amikor vége (akár hiba, akár stop miatt)
         recognition.onend = function() {
             isListening = false;
             $('#btn-voice-trigger').removeClass('text-danger pulse-ai');
-            $('#voice-loader').hide(); // ELREJTÉS
+            $('#voice-loader').hide();
         };
 
-        // Hiba kezelése (pl. nincs mikrofon engedélyezve)
         recognition.onerror = function(event) {
             console.error('Speech recognition error:', event.error);
             isListening = false;
@@ -1977,9 +2018,123 @@
         };
 
     } else {
-        // Ha nem támogatja a böngésző (pl. régi Firefox)
         $('#btn-voice-trigger').hide();
     }
+
+
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
+        $('#btn-record-trigger').on('click', function() {
+            closeAllChatOverlays();
+
+            if (!isRecording) {
+                // Rögzítés indítása
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        audioChunks = [];
+                        mediaRecorder = new MediaRecorder(stream);
+
+                        mediaRecorder.ondataavailable = function(event) {
+                            audioChunks.push(event.data);
+                        };
+
+                        mediaRecorder.onstart = function() {
+                            isRecording = true;
+
+                            $('#btn-record-trigger').addClass('text-danger pulse-ai');
+                            $('#voice-loader').css('display', 'flex');
+
+                            $('#btn-record-trigger i')
+                                .removeClass('fa-microphone-lines')
+                                .addClass('fa-square'); // vagy 'fa-circle-stop'
+
+
+
+                            const $input = $('#chataiwd-input');
+                            $input.data('original-placeholder', $input.attr('placeholder')); // Elmentjük a régit
+                            $input.attr('placeholder', cfg.place_hang_rogzitese);
+                            $input.prop('disabled', true);
+                        };
+
+                        mediaRecorder.onstop = function() {
+                            isRecording = false;
+                            $('#btn-record-trigger').removeClass('text-danger pulse-ai');
+                            $('#voice-loader').hide();
+
+                            $('#btn-record-trigger i')
+                                .removeClass('fa-square') // vagy 'fa-circle-stop'
+                                .addClass('fa-microphone-lines');
+
+                            const $input = $('#chataiwd-input');
+                            $input.attr('placeholder', $input.data('original-placeholder'));
+                            $input.prop('disabled', false); // Visszaengedjük a gépelést
+
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                            sendVoiceAttachment(audioBlob);
+
+                            stream.getTracks().forEach(track => track.stop());
+                        };
+
+                        mediaRecorder.start();
+                    })
+                    .catch(error => {
+                        alert(cfg.text_enable_microphone);
+                    });
+            } else {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+            }
+        });
+
+    } else {
+        $('#btn-record-trigger').hide();
+    }
+
+
+
+    function sendVoiceAttachment(audioBlob) {
+        const formData = new FormData();
+
+        formData.append('message', '');
+        formData.append('session_id', sessionId);
+
+        formData.append('attachment', audioBlob, 'voice_message.webm');
+
+        formData.append('attachment_thumb', '');
+
+        if (cfg.nonce) {
+            formData.append('nonce', cfg.nonce);
+        }
+
+        $.ajax({
+            url: cfg.send_message_url,
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            success: function(json) {
+                // hideChatLoader();
+                if (json['error']) {
+                    alert(json['error']);
+                } else if (json['success']) {
+                    console.log("A hangfájl rögzítése és mentése sikeres volt.");
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.error(thrownError);
+            }
+        });
+    }
+
+
+
 
 
     // levél küldés az áruháznak: information/contact
@@ -2069,7 +2224,7 @@
 
         const formData = {
             action: 'chataiwd_send_contact_email',
-            nonce: cfg.nonce, // Használd a cfg objektumot, amit a platformnál is
+            nonce: cfg.nonce,
             name: $('#chataiwd-contact-name').val(),
             email: $('#chataiwd-contact-email').val(),
             message: $('#chataiwd-contact-message').val()

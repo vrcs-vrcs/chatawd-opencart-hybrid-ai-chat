@@ -29,6 +29,28 @@ class chataiwd extends \Opencart\System\Engine\Controller {
     private $callback_url;
     private $model_load = 'extension/chataiwd/module/chataiwd';
     private $model_function = 'model_extension_chataiwd_module_chataiwd';
+    private $allowed_types = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'application/pdf',
+        'audio/webm',      // Chrome, Firefox, Safari (modern)
+        'audio/ogg',       // Firefox alternatív
+        'audio/wav',       // Standard wav
+        'audio/mpeg',      // Standard mp3
+        'audio/mp4',       // iOS / Safari m4a hangfelvételek
+        'audio/x-m4a',
+        'video/webm',
+    ];
+    private $audio_extension = [
+        'webm',
+        'ogg',
+        'wav',
+        'mp4',
+        'x-m4a',
+        'mp3',
+    ];
+
 
     public function __construct(\Opencart\System\Engine\Registry $registry) {
         parent::__construct($registry);
@@ -211,6 +233,7 @@ class chataiwd extends \Opencart\System\Engine\Controller {
         $data['add_to_cart_url']            = $this->url->link($this->model_load . $this->method_separator . 'addToCart' . $lang_param, '', true);
         $data['apply_coupon_url']           = $this->url->link($this->model_load . $this->method_separator . 'applyCoupon' . $lang_param, '', true);
         $data['spin_wheel_url']             = $this->url->link($this->model_load . $this->method_separator . 'spinWheel' . $lang_param, '', true); // Szerencsekerék
+        $data['download_url']               = $this->url->link($this->model_load . $this->method_separator . 'downloadAttachment' . $lang_param, '', true); // Szerencsekerék
 
         $data['file_upload']                = $this->url->link('tool/upload', 'upload_token=' . $this->session->data['upload_token'], true);
 
@@ -265,6 +288,7 @@ class chataiwd extends \Opencart\System\Engine\Controller {
             'call_human_url'        => $data['call_human_url'],
             'merge_history_url'     => $data['merge_history_url'],
             'spin_wheel_url'        => $data['spin_wheel_url'],
+            'download_url'          => $data['download_url'],
 
             // Auth / Felhasználói URL-ek
             'check_auth_url'        => $data['check_auth_url'],
@@ -359,9 +383,13 @@ class chataiwd extends \Opencart\System\Engine\Controller {
 
             'text_applied'            => $this->language->get('text_applied'),
             'text_wheel_spinning'     => $this->language->get('text_wheel_spinning'),
-            'text_wheel_spin_btn'     => $this->language->get('text_wheel_spin_btn')
+            'text_wheel_spin_btn'     => $this->language->get('text_wheel_spin_btn'),
 
-            ];
+            'language_code'           => $this->config->get('config_language'),
+            'text_enable_microphone'    => ($this->language->get('text_enable_microphone') != 'text_enable_microphone')   ? $this->language->get('text_enable_microphone') : 'Please allow the use of the microphone!',
+            'place_hang_rogzitese'    => ($this->language->get('place_hang_rogzitese') != 'place_hang_rogzitese')   ? $this->language->get('place_hang_rogzitese') : '🎙️ Recording audio... Click the button to send!',
+
+        ];
 
         return $this->load->view($this->model_load, $data);
     }
@@ -446,7 +474,24 @@ class chataiwd extends \Opencart\System\Engine\Controller {
             'language_id' => (int)$this->config->get('config_language_id'),
         ];
 
-        $fileData = null;
+
+
+        $attachment_thumb = $this->request->post['attachment_thumb'] ?? '';
+
+
+        if ($attachment_thumb) {
+            // Ha van kép-bélyegkép, akkor átméretezzük a megszokott módon
+            $this->load->model('tool/image');
+            $this->load->model($this->model_load);
+
+            $height = $this->{$this->model_function}->getProportionalHeight(basename($attachment_thumb), 160);
+            $thumbnail_url = $this->model_tool_image->resize(basename($attachment_thumb), 160, $height);
+            $attachment_thumb = $thumbnail_url;
+
+        } elseif ($attachment_data) {
+            $attachment_thumb = DIR_UPLOAD . $attachment_data['path'];
+        }
+
         if ($attachment_data) {
             $filePath = DIR_UPLOAD . $attachment_data['path'];
             $fileContent = file_get_contents($filePath);
@@ -455,20 +500,10 @@ class chataiwd extends \Opencart\System\Engine\Controller {
                 'filename' => $attachment_data['filename'],
                 'mime_type' => $attachment_data['mime_type'],
                 'content' => $base64File,
-                'attachment_thumb' => $this->request->post['attachment_thumb'] ?? '',
+                'attachment_thumb' => $attachment_thumb,
             ];
         }
 
-        $attachment_thumb = $this->request->post['attachment_thumb'] ?? '';
-
-        if ($attachment_thumb) {
-            $this->load->model('tool/image');
-            $this->load->model($this->model_load);
-
-            $height = $this->{$this->model_function}->getProportionalHeight(basename($attachment_thumb), 160);
-            $thumbnail_url = $this->model_tool_image->resize(basename($attachment_thumb), 160, $height);
-            $attachment_thumb = $thumbnail_url;
-        }
 
         $response = $this->postCurl($analysisUrl, $analysisPostData);
         $analysisResponse = $response['respons'];
@@ -616,6 +651,108 @@ class chataiwd extends \Opencart\System\Engine\Controller {
         $this->response->setOutput(json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     }
 
+    public function downloadAttachment(): void {
+        if (!isset($this->request->get['path'])) {
+            $this->response->addHeader('HTTP/1.1 200 OK');
+            return;
+        }
+
+        $file_path = html_entity_decode($this->request->get['path'], ENT_QUOTES, 'UTF-8');
+
+        // Biztonsági ellenőrzések
+        $is_inside_upload = (strpos($file_path, DIR_UPLOAD) === 0);
+        $is_inside_image = (strpos($file_path, DIR_IMAGE) === 0);
+
+        if ((!$is_inside_upload && !$is_inside_image) || strpos($file_path, '..') !== false) {
+            header('HTTP/1.1 403 Forbidden');
+            echo "Access Denied.";
+            return;
+        }
+
+        if (!file_exists($file_path)) {
+            header('HTTP/1.1 200 OK');
+            return;
+        }
+
+        $file_size = filesize($file_path);
+        $mime_type = mime_content_type($file_path) ?: 'application/octet-stream';
+
+        if (!in_array($mime_type, $this->allowed_types)) {
+            header('HTTP/1.1 403 Forbidden');
+            return;
+        }
+
+        $disposition = 'attachment';
+        if (
+            strpos($mime_type, 'image/') === 0 ||
+            strpos($mime_type, 'audio/') === 0 ||
+            strpos($mime_type, 'video/') === 0 ||
+            $mime_type === 'application/pdf'
+        ) {
+            $disposition = 'inline';
+        }
+
+        // ====================================================
+        // INTELLIGENS SÁV-ALAPÚ (HTTP RANGE) STREAMING KEZELÉS
+        // ====================================================
+        $start = 0;
+        $end = $file_size - 1;
+
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $c_start = $start;
+            $c_end = $end;
+
+            list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+            if (strpos($range, ',') !== false) {
+                header('HTTP/1.1 416 Requested Range Not Satisfiable');
+                header("Content-Range: bytes $start-$end/$file_size");
+                exit;
+            }
+            if ($range == '-') {
+                $c_start = $file_size - substr($range, 1);
+            } else {
+                $range = explode('-', $range);
+                $c_start = $range[0];
+                $c_end = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $file_size - 1;
+            }
+            $c_end = ($c_end > $end) ? $end : $c_end;
+            if ($c_start > $c_end || $c_start > $file_size - 1 || $c_end >= $file_size) {
+                header('HTTP/1.1 416 Requested Range Not Satisfiable');
+                header("Content-Range: bytes $start-$end/$file_size");
+                exit;
+            }
+            $start = $c_start;
+            $end = $c_end;
+            $length = $end - $start + 1;
+
+            header('HTTP/1.1 206 Partial Content'); // 206-os státusz: részleges tartalom kiszolgálása
+            header("Content-Range: bytes $start-$end/$file_size");
+        } else {
+            $length = $file_size;
+            header('HTTP/1.1 200 OK');
+        }
+
+        // Fejlécek kiküldése
+        header('Content-Type: ' . $mime_type);
+        header('Content-Disposition: ' . $disposition . '; filename="' . basename($file_path) . '"');
+        header('Content-Length: ' . $length);
+        header('Accept-Ranges: bytes'); // Jelezzük a böngészőnek, hogy támogatjuk a sáv-alapú pufferelést
+
+        // Fájl részleges kiírása puffereléssel (8 KB-os darabokban)
+        $fp = fopen($file_path, 'rb');
+        fseek($fp, $start);
+
+        $buffer = 8192;
+        while (!feof($fp) && ($p = ftell($fp)) <= $end) {
+            if ($p + $buffer > $end) {
+                $buffer = $end - $p + 1;
+            }
+            echo fread($fp, $buffer);
+            flush();
+        }
+        fclose($fp);
+        exit;
+    }
     private function getCustomer($chat_user) {
         $customer = [];
         $customer['customer_id'] = (int)$this->customer->getId();
@@ -1170,7 +1307,7 @@ class chataiwd extends \Opencart\System\Engine\Controller {
         }
 
         $max_file_size = 5 * 1024 * 1024; // 5 MB
-        $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+
 
         if ($file['attachment']['size'] > $max_file_size) {
             return ['error' => ($this->language->get('error_file_too_large') != 'error_file_too_large')
@@ -1179,13 +1316,13 @@ class chataiwd extends \Opencart\System\Engine\Controller {
         }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime_type = finfo_file($finfo, $file['attachment']['tmp_name']);
+        $mime_type = $file['attachment']['type'] ?? finfo_file($finfo, $file['attachment']['tmp_name']);
         finfo_close($finfo);
 
-        if (!in_array($mime_type, $allowed_types)) {
+        if (!in_array($mime_type, $this->allowed_types)) {
             return ['error' => ($this->language->get('error_invalid_file_type') != 'error_invalid_file_type')
                 ? $this->language->get('error_invalid_file_type')
-                : 'Invalid file type. Only images (JPEG, PNG, GIF) and PDFs are allowed.'];
+                : 'Invalid file type. Only images (JPEG, PNG, GIF), PDFs and voice messages are allowed.'];
         }
 
         $temp_dir = DIR_UPLOAD . 'temp_attachments/';
@@ -1367,13 +1504,18 @@ class chataiwd extends \Opencart\System\Engine\Controller {
 
                     if (!empty($history['attachment_thumb'])) {
 
-                        if (strtolower(pathinfo($history['attachment_thumb'], PATHINFO_EXTENSION)) == 'pdf') {
+                        $extension = strtolower(pathinfo($history['attachment_thumb'], PATHINFO_EXTENSION));
+
+                        if ($extension == 'pdf') {
                             $base_img_path = strstr($this->chat_url, '/index.php', true);
 
                             if ($base_img_path === false) {
                                 $base_img_path = $this->chat_url;
                             }
                             $history['attachment_thumb'] = $base_img_path . '/image/pdf_icon.png';
+
+                        } elseif (in_array($extension,$this->audio_extension)) {
+                            $history['attachment_thumb'] = $history['attachment_thumb'];
 
                         } else {
                             $height = $this->{$this->model_function}->getProportionalHeight(basename($history['attachment_thumb']), 160);
@@ -1494,10 +1636,9 @@ class chataiwd extends \Opencart\System\Engine\Controller {
 
         if ($this->request->server['REQUEST_METHOD'] === 'POST' && isset($this->request->files['attachment'])) {
             $file = $this->request->files['attachment'];
-            $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
             $max_file_size = 5 * 1024 * 1024; // 5 MB
 
-            if (!in_array($file['type'], $allowed_types)) {
+            if (!in_array($file['type'], $this->allowed_types)) {
                 $json['error'] = ($this->language->get('error_invalid_file_type') != 'error_invalid_file_type') ? $this->language->get('error_invalid_file_type') : 'Invalid file type. Only images (JPEG, PNG, GIF) and PDFs are allowed.';
                 $this->response->setOutput(json_encode($json));
                 return;

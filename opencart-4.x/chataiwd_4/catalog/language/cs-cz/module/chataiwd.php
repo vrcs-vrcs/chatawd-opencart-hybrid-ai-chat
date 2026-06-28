@@ -190,3 +190,5 @@ $_['text_dispatcher_response_header_fallback']  = 'Dispečer odpovídá';
 $_['text_ai_response_indicator_fallback']       = 'UI Odpovídá';
 $_['text_dispatcher_response_indicator_fallback'] = 'Dispečer odpovídá';
 $_['text_welcome_message_fallback']             = 'Ahoj! Jak vám mohu dnes pomoci?';
+$_['text_enable_microphone']             = 'Prosím, povolte přístup k mikrofonu!';
+$_['place_hang_rogzitese']               = '🎙️ Nahrávání hlasu... Klikněte na tlačítko pro odeslání!';
