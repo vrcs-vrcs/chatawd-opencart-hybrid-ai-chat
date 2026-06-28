@@ -196,3 +196,5 @@ $_['text_dispatcher_response_header_fallback']    = 'Dispecerul răspunde';
 $_['text_ai_response_indicator_fallback']         = 'Răspuns AI';
 $_['text_dispatcher_response_indicator_fallback'] = 'Dispecerul răspunde';
 $_['text_welcome_message_fallback']               = 'Bună! Cu ce te pot ajuta astăzi?';
+$_['text_enable_microphone']             = 'Vă rugăm să permiteți accesul la microfon!';
+$_['place_hang_rogzitese']               = '🎙️ Înregistrare audio... Faceți clic pe buton pentru a trimite!';

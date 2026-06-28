@@ -136,6 +136,7 @@ $_['text_days'] = 'Deň';
 $_['text_subject_placeholder'] = 'Napr.: Zabudli ste na niečo?';
 $_['text_content_placeholder'] = 'Správa...';
 
+$_['text_ai_syncr'] = 'AI synchronizácia';
 $_['text_syncrestart'] = 'Reštartovať synchronizáciu';
 $_['text_syncrestart_click'] = 'Kliknite sem, ak chcete znova synchronizovať obsah databázy s AI.';
 

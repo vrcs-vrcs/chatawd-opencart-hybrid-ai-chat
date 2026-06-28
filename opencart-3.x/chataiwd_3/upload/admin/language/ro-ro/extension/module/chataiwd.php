@@ -144,6 +144,7 @@ $_['text_days'] = 'Zi';
 $_['text_subject_placeholder'] = 'Ex: Ați uitat ceva?';
 $_['text_content_placeholder'] = 'Mesaj...';
 
+$_['text_ai_syncr'] = 'Sincronizare AI';
 $_['text_syncrestart'] = 'Restartare sincronizare';
 $_['text_syncrestart_click'] = 'Click aici dacă doriți să resincronizați conținutul bazei de date cu AI.';
 

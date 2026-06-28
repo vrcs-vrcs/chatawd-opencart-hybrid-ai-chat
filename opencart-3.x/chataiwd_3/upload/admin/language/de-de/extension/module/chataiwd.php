@@ -140,6 +140,7 @@ $_['text_days'] = 'Tag';
 $_['text_subject_placeholder'] = 'Z.B.: Haben Sie etwas vergessen?';
 $_['text_content_placeholder'] = 'Nachricht...';
 
+$_['text_ai_syncr'] = 'KI-Synchronisierung';
 $_['text_syncrestart'] = 'Synchronisation neu starten';
 $_['text_syncrestart_click'] = 'Klicken Sie hier, wenn Sie den Datenbankinhalt erneut mit der KI synchronisieren möchten.';
 

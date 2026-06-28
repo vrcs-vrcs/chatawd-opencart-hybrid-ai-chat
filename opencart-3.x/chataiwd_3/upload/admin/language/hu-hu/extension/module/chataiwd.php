@@ -148,6 +148,7 @@ $_['text_subject_placeholder'] = 'Pl.: Ottfelejtett valamit?';
 $_['text_content_placeholder'] = 'Üzenet...';
 
 
+$_['text_ai_syncr'] = 'AI szinkronizáció';
 $_['text_syncrestart'] = 'Szinkronizáció Újraindítása';
 $_['text_syncrestart_click'] = 'Kattints ide, ha az adatbázis tartalmát újra le akarod szinkronizálni az AI-al.';
 

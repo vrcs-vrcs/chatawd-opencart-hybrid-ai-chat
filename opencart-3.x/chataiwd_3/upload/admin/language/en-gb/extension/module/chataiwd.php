@@ -151,6 +151,7 @@ $_['text_days'] = 'Day';
 $_['text_subject_placeholder'] = 'E.g.: Did you forget something?';
 $_['text_content_placeholder'] = 'Message...';
 
+$_['text_ai_syncr'] = 'AI Synchronization';
 $_['text_syncrestart'] = 'Restart Synchronization';
 $_['text_syncrestart_click'] = 'Click here if you want to re-synchronize the database content with the AI.';
 

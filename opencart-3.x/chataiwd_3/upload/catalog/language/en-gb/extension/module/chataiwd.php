@@ -194,3 +194,5 @@ $_['text_dispatcher_response_header_fallback']    = 'Dispatcher Response';
 $_['text_ai_response_indicator_fallback']         = 'AI Response';
 $_['text_dispatcher_response_indicator_fallback'] = 'Dispatcher Responding';
 $_['text_welcome_message_fallback']               = 'Hello! How can I help you today?';
+$_['text_enable_microphone']             = 'Please allow access to your microphone!';
+$_['place_hang_rogzitese']               = '🎙️ Recording audio... Click the button to send!';

@@ -144,6 +144,7 @@ $_['text_days'] = 'Dzień';
 $_['text_subject_placeholder'] = 'Np.: Czy o czymś zapomniałeś?';
 $_['text_content_placeholder'] = 'Wiadomość...';
 
+$_['text_ai_syncr'] = 'Synchronizacja AI';
 $_['text_syncrestart'] = 'Restart synchronizacji';
 $_['text_syncrestart_click'] = 'Kliknij tutaj, jeśli chcesz ponownie zsynchronizować zawartość bazy danych z AI.';
 

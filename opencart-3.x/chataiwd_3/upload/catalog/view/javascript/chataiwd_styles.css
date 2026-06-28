@@ -1626,6 +1626,11 @@
     font-weight: 400 !important;
 }
 
+
+.chataiwd-container .chataiwd-footer .composer-actions-bar .action-btn.text-danger {
+    color: #dc3545;
+}
+
 /* 4. KONKRÉT KARAKTER FIXEK (Ha a tartalom eltűnne) */
 [class*="fa-whatsapp"]::before { content: "\f232" !important; }
 [class*="fa-share-nodes"]::before { content: "\f1e0" !important; }

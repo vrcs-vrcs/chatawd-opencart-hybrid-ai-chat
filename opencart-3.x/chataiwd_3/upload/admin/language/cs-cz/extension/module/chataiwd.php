@@ -144,6 +144,7 @@ $_['text_days'] = 'Den';
 $_['text_subject_placeholder'] = 'Např.: Zapomněli jste na něco?';
 $_['text_content_placeholder'] = 'Zpráva...';
 
+$_['text_ai_syncr'] = 'AI synchronizace';
 $_['text_syncrestart'] = 'Restart synchronizace';
 $_['text_syncrestart_click'] = 'Klikněte sem, pokud chcete znovu synchronizovat obsah databáze s AI.';
 

@@ -190,3 +190,6 @@ $_['text_dispatcher_response_header_fallback']  = 'Dyspozytor odpowiada';
 $_['text_ai_response_indicator_fallback']       = 'SI Odpowiada';
 $_['text_dispatcher_response_indicator_fallback'] = 'Dyspozytor odpowiada';
 $_['text_welcome_message_fallback']             = 'Cześć! W czym mogę Ci dzisiaj pomóc?';
+
+$_['text_enable_microphone']             = 'Proszę zezwolić na dostęp do mikrofonu!';
+$_['place_hang_rogzitese']               = '🎙️ Nagrywanie dźwięku... Kliknij przycisk, aby wysłać!';
